@@ -2,3 +2,21 @@ Algorithms And Data Structures
 ==============================
 
 Some labbing with algorithms and data structure implementation in C.
+
+Todo
+----
+
+Data:
+
+PWSData with comparator and hash.
+PWSList 
+PWSTree
+PWSHashMap
+PWSGraph
+
+Algorithms:
+
+Sort
+Balance tree
+Search tree
+A*
