@@ -38,5 +38,5 @@ libAlgNData: $(OBJ)
 .PHONY: clean
 
 clean:
-	rm -f $(ODIR)/*.o $(TESTDIR)/*.o *~ core $(INCDIR)/*~ run-all-tests libAlgNData
+	rm -f $(ODIR)/*.o $(TESTDIR)/*.o run-all-tests libAlgNData
 
