@@ -2,13 +2,13 @@
 
 typedef struct __Node Node;
 struct __Node {
-void *data;
-Node *previous;
-Node *next;
+	void *data;
+	Node *previous;
+	Node *next;
 };
 
 struct __PWSLinkedList {
-Node *root;
+	Node *root;
 };
 
 void addLast(void* data, PWSLinkedList* list)

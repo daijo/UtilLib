@@ -6,24 +6,24 @@ CFLAGS=-I$(IDIR) -std=c99 -pedantic
 
 ODIR=obj
 
-_DEPS = PWSLinkedList.h PWSHashFunctions.h
+_DEPS = PWSData.h PWSLinkedList.h PWSHashFunctions.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = PWSLinkedList.o PWSHashFunctions.o
+_OBJ = PWSData.o PWSLinkedList.o PWSHashFunctions.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
-_TESTS = PWSLinkedListTest.o CuTest.o AllTests.o
+_TESTS = PWSDataTest.o PWSLinkedListTest.o CuTest.o AllTests.o
 TESTS = $(patsubst %,$(TESTDIR)/%,$(_TESTS))
 
-main: libAlgNData
+main: libAlgNData.a
 
 test: buildtests
 
-$(ODIR)/%.o: $(TESTDIR)/%.c $(DEPS)
+$(TESTDIR)/%.o: $(TESTDIR)/%.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-buildtests: libAlgNData gentests $(TESTS)
-	$(CC) $(TESTS) -o run-all-tests -I./test $(CFLAGS)
+buildtests: libAlgNData.a gentests $(TESTS)
+	$(CC) $(TESTS) -o run-all-tests -I./test $(CFLAGS) ./libAlgNData.a
 	./run-all-tests
 
 gentests:
@@ -32,11 +32,11 @@ gentests:
 $(ODIR)/%.o: $(SRCDIR)/%.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-libAlgNData: $(OBJ)
-	$(CC) -shared -o $@ $^ $(CFLAGS)
+libAlgNData.a: $(OBJ)
+	ar rs $@ $^
 
 .PHONY: clean
 
 clean:
-	rm -f $(ODIR)/*.o $(TESTDIR)/*.o run-all-tests libAlgNData
+	rm -f $(ODIR)/*.o $(TESTDIR)/*.o run-all-tests libAlgNData.a
 

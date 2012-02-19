@@ -1,19 +1,29 @@
+#include <stdlib.h>
+
 #include "PWSLinkedList.h"
 #include "CuTest.h"
 
 void TestPWSLinkedListInit(CuTest* tc)
 {
-        //CuString* str = CuStringNew();
-        //CuAssertTrue(tc, 0 == str->length);
-        CuAssertTrue(tc, 0 != 0);
-        //CuAssertStrEquals(tc, "", str->buffer);
+        CuFail(tc, "Incomplete test case.");
 }
 
-CuSuite* CuGetSuite(void)
+void TestPWSLinkedListAddFirst(CuTest* tc)
 {
-        CuSuite* suite = CuSuiteNew();
+        CuFail(tc, "Incomplete test case.");
+}
 
-        SUITE_ADD_TEST(suite, TestPWSLinkedListInit);
+void TestPWSLinkedListAddLast(CuTest* tc)
+{
+        CuFail(tc, "Incomplete test case.");
+}
 
-        return suite;
+void TestPWSLinkedListGetFirst(CuTest* tc)
+{
+        CuFail(tc, "Incomplete test case.");
+}
+
+void TestPWSLinkedListGetLast(CuTest* tc)
+{
+        CuFail(tc, "Incomplete test case.");
 }
