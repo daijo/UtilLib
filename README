@@ -8,7 +8,7 @@ Todo
 
 Data:
 
-PWSData with comparator and hash.
+PWSData (add hash).
 PWSList 
 PWSTree
 PWSHashMap
@@ -16,7 +16,15 @@ PWSGraph
 
 Algorithms:
 
-Sort
+QuickSort
+HeapSort
+Dijkstra
+Floyd–Warshall
 Balance tree
 Search tree
 A*
+Alfa-Beta
+Brzozowski's
+Viterbia
+Simplex
+Floyd's cycle-finding
