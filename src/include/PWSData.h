@@ -1,11 +1,18 @@
-/* Struct holding pointer to data and function pointer to the comparator function. */
+#import <stdbool.h>
 
 typedef struct __PWSData PWSData;
 
-/* Allocates a struct and assign the passed pointer to it. */
+/* Allocates a PWSData and assigns the passed pointer to it. */
 PWSData* initData(void *innerData);
 
-/* Frees the struct and returns the pointer to the raw data for deallocation by the caller. */
+/* Frees the PWSData and returns the pointer to the raw data for deallocation by the caller. */
 void* freeData(PWSData *data);
 
-/* Todo: set function pointers to comparator function. */
+/* Sets function pointer to comparator function. */
+void setComparator(PWSData *data, int (*compareFunction)(void*, void*));
+
+/* Checks if the PWSData has a associated comparator function. */
+bool hasComparator(PWSData* data);
+
+/* Compares two PWSData. */
+int compare(PWSData* data1, PWSData* data2);
