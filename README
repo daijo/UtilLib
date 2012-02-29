@@ -11,7 +11,7 @@ Data:
 PWSData (add hash).
 PWSList 
 PWSTree
-PWSHashMap
+PWSHashMap (Red–black tree?)
 PWSGraph
 
 Algorithms:
@@ -20,7 +20,6 @@ QuickSort
 HeapSort
 Dijkstra
 Floyd–Warshall
-Balance tree
 Search tree
 A*
 Alfa-Beta
