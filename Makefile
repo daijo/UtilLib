@@ -1,10 +1,10 @@
 SRCDIR = ./src
 TESTDIR = ./test
+ODIR=./obj
 IDIR =./src/include
-CC=gcc
-CFLAGS=-I$(IDIR) -std=c99 -pedantic
 
-ODIR=obj
+CC=gcc
+CFLAGS=-I$(IDIR) -Wall -Werror -pedantic -std=c99 
 
 _DEPS = PWSData.h PWSLinkedList.h PWSHashFunctions.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
