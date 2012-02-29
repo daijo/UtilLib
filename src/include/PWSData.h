@@ -1,4 +1,4 @@
-#import <stdbool.h>
+#include <stdbool.h>
 
 typedef struct __PWSData PWSData;
 
