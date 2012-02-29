@@ -1,8 +1,11 @@
+#include <stdlib.h>
+#include <string.h>
+
 #include "PWSLinkedList.h"
 
 typedef struct __ListNode ListNode;
 struct __ListNode {
-	void *data;
+	PWSData *data;
 	ListNode *previous;
 	ListNode *next;
 };
@@ -13,19 +16,37 @@ struct __PWSLinkedList {
         int count;
 };
 
-PWSLinkedList* initLinkedList()
+static ListNode* initNodeWithData(PWSData *data)
 {
+	ListNode* node = (ListNode*)malloc(sizeof(ListNode));
+	memset(node, 0, sizeof(ListNode));
+	node->data = data;
+	return node;
 }
 
-void freeLinkedList(PWSLinkedList *list) /* free remaining data? */
+PWSLinkedList* initLinkedList()
 {
+	PWSLinkedList* list = (PWSLinkedList*)malloc(sizeof(PWSLinkedList));
+	memset(list, 0, sizeof(PWSLinkedList));
+        return list;
+}
+
+void freeLinkedList(PWSLinkedList *list)
+{
+	free(list); /* For now we assume all elements have been removed and freed. */
 }
 
 int addLast(PWSLinkedList *list, PWSData* data)
 {
+	ListNode* node = initNodeWithData(data);
+	node->previous = list->tail;
+	if (list->tail != NULL)
+		list->tail->next = node;
+	list->tail = node;
+	return list->count++;
 }
 
-void addFirst(PWSLinkedList *list, PWSData* data)
+/*void addFirst(PWSLinkedList *list, PWSData* data)
 {
 }
 
@@ -83,4 +104,4 @@ int count(PWSLinkedList *list)
 
 bool isEmpty(PWSLinkedList *list)
 {
-}
+}*/

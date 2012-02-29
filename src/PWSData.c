@@ -14,7 +14,7 @@ struct __PWSData {
 PWSData* initData(void *innerData)
 {
 	PWSData* data = (PWSData*)malloc(sizeof (PWSData));
-	memset(data, 0, (sizeof (PWSData)));
+	memset(data, 0, sizeof (PWSData));
         data->innerData = innerData;
 	return data;
 }
