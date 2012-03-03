@@ -3,8 +3,22 @@ Algorithms And Data Structures
 
 Some labbing with algorithms and data structure implementation in C.
 
+To build:
+
+    make
+
+To cross-compile for e.g. AVR:
+
+    make CROSS_COMPILE=avr- MACH=atmega328
+
+To test:
+
+    make test
+
 Todo
 ----
+
+Sort out the Makefile (test, coverage, valgrind, etc).
 
 Data:
 
