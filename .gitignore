@@ -1,7 +1,5 @@
 .DS_Store
 *.swp
-obj
-*.o
-lib*
+out
 AllTests.c
 run-all-tests

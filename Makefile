@@ -2,14 +2,15 @@
 
 SRCDIR = ./src
 TESTDIR = ./test
-ODIR = ./obj
+OUTDIR = ./out
+ODIR = $(OUTDIR)/obj
+TESTODIR = $(OUTDIR)/test-obj
 IDIR = ./src/include
-OUTDIR = 
 
 # Toolchain
 
 CC = gcc
-CFLAGS = -I$(IDIR) -Wall -Werror -pedantic -std=c99 $(MACH_ARG)
+CFLAGS = -I$(IDIR) -Wall -Werror -pedantic -std=c99
 AR = ar
 
 ifdef MACH
@@ -18,38 +19,63 @@ endif
 
 # Files
 
+LIB = libAlgData.a
+
 _DEPS = PWSData.h PWSLinkedList.h PWSHashFunctions.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 _OBJ = PWSData.o PWSLinkedList.o PWSHashFunctions.o
-OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+ifdef CROSS_COMPILE
+	ODIR = $(OUTDIR)/$(CROSS_COMPILE)obj
+	OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+else
+	OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+	TESTOBJ = $(patsubst %,$(TESTODIR)/%,$(_OBJ))
+endif
 
 _TESTS = PWSDataTest.o PWSLinkedListTest.o CuTest.o AllTests.o
-TESTS = $(patsubst %,$(TESTDIR)/%,$(_TESTS))
+TESTS = $(patsubst %,$(TESTODIR)/%,$(_TESTS))
+
+# Make stuff
+
+.PHONY: main test gentests profile clean
+.PRECIOUS: %/.d
+
+# To handle dependencies to output directories
+
+%/.d:
+	mkdir -p $(@D)
+	touch $@
 
 # Build
 #
 # make CROSS_COMPILE=avr- MACH=atmega328 for cross compile to AVR.
 
-main: libAlgNData.a
+main: $(OUTDIR)/$(CROSS_COMPILE)$(LIB)
 
-$(ODIR)/%.o: $(SRCDIR)/%.c $(DEPS)
-	$(CROSS_COMPILE)$(CC) -c -o $@ $< $(CFLAGS)
+$(ODIR)/%.o: $(SRCDIR)/%.c $(DEPS) $(ODIR)/.d
+	$(CROSS_COMPILE)$(CC) -c -o $@ $< $(CFLAGS) $(MACH_ARG)
 
-libAlgNData.a: $(OBJ)
+$(OUTDIR)/$(CROSS_COMPILE)$(LIB): $(OBJ) $(OUTDIR)/.d
 	$(CROSS_COMPILE)$(AR) rs $@ $^
 
 # Test
 
-test: libAlgNData.a gentests $(TESTS)
-	$(CC) $(TESTS) -o run-all-tests -I./test $(CFLAGS) ./libAlgNData.a
-	./run-all-tests
-
-$(TESTDIR)/%.o: $(TESTDIR)/%.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+test: $(OUTDIR)/test-$(LIB) gentests $(TESTS)
+	$(CC) $(TESTS) -o run-all-tests -I./test $(CFLAGS) $(OUTDIR)/test-$(LIB) 
+	gcov -o$(TESTODIR) $(SRCDIR)/*.c ./run-all-tests
 
 gentests:
 	$(TESTDIR)/make-tests.sh $(TESTDIR)/*.c > $(TESTDIR)/AllTests.c
+
+$(TESTODIR)/%.o: $(TESTDIR)/%.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+$(TESTODIR)/%.o: $(SRCDIR)/%.c $(DEPS) $(TESTODIR)/.d
+	$(CC) -c -o $@ $< $(CFLAGS) --coverage #-fprofile-arcs -ftest-coverage
+
+$(OUTDIR)/test-$(LIB): $(TESTOBJ) $(OUTDIR)/.d
+	$(AR) rs $@ $^
 
 # Profile
 
@@ -57,8 +83,6 @@ profile: buildprofilelib
 
 # Clean
 
-.PHONY: clean
-
 clean:
-	rm -f $(ODIR)/*.o $(TESTDIR)/*.o run-all-tests libAlgNData.a callgrind.out.*
-
+	rm -f run-all-tests callgrind.out.*
+	rm -rf $(OUTDIR)
