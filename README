@@ -22,7 +22,7 @@ To clean:
 Todo
 ----
 
-Sort out the Makefile (test, coverage, valgrind, etc).
+Sort out the Makefile (lcov, valgrind).
 
 Data:
 

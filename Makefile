@@ -61,18 +61,20 @@ $(OUTDIR)/$(CROSS_COMPILE)$(LIB): $(OBJ) $(OUTDIR)/.d
 
 # Test
 
-test: $(OUTDIR)/test-$(LIB) gentests $(TESTS)
-	$(CC) $(TESTS) -o $(OUTDIR)/run-all-tests -I./test $(CFLAGS) $(OUTDIR)/test-$(LIB) 
-	gcov -o$(TESTODIR) $(SRCDIR)/*.c $(OUTDIR)/run-all-tests
+test: $(OUTDIR)/test-$(LIB) gentests $(TESTS) $(OUTDIR)/gcov/.d
+	clang $(TESTS) -o $(OUTDIR)/run-all-tests -I./test $(CFLAGS) $(OUTDIR)/test-$(LIB) -fprofile-arcs -ftest-coverage
+	$(OUTDIR)/run-all-tests
+	gcov -o$(TESTODIR) $(SRCDIR)/*.c
+	mv *.gcov $(OUTDIR)/gcov
 
 gentests:
 	$(TESTDIR)/make-tests.sh $(TESTDIR)/*.c > $(TESTDIR)/AllTests.c
 
-$(TESTODIR)/%.o: $(TESTDIR)/%.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+$(TESTODIR)/%.o: $(TESTDIR)/%.c $(DEPS) $(TESTODIR)/.d
+	clang -c -o $@ $< $(CFLAGS)
 
 $(TESTODIR)/%.o: $(SRCDIR)/%.c $(DEPS) $(TESTODIR)/.d
-	$(CC) -c -o $@ $< $(CFLAGS) --coverage #-fprofile-arcs -ftest-coverage
+	clang -c -o $@ $< $(CFLAGS) -fprofile-arcs -ftest-coverage
 
 $(OUTDIR)/test-$(LIB): $(TESTOBJ) $(OUTDIR)/.d
 	$(AR) rs $@ $^
