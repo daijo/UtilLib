@@ -64,7 +64,7 @@ $(OUTDIR)/$(CROSS_COMPILE)$(LIB): $(OBJ) $(OUTDIR)/.d
 test: $(OUTDIR)/test-$(LIB) gentests $(TESTS) $(OUTDIR)/gcov/.d
 	clang $(TESTS) -o $(OUTDIR)/run-all-tests -I./test $(CFLAGS) $(OUTDIR)/test-$(LIB) -fprofile-arcs -ftest-coverage
 	$(OUTDIR)/run-all-tests
-	gcov -o$(TESTODIR) $(SRCDIR)/*.c
+	gcov -o$(TESTODIR) $(SRCDIR)/*.c &> /dev/null
 	mv *.gcov $(OUTDIR)/gcov
 
 gentests:
