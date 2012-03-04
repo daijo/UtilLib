@@ -62,8 +62,8 @@ $(OUTDIR)/$(CROSS_COMPILE)$(LIB): $(OBJ) $(OUTDIR)/.d
 # Test
 
 test: $(OUTDIR)/test-$(LIB) gentests $(TESTS)
-	$(CC) $(TESTS) -o run-all-tests -I./test $(CFLAGS) $(OUTDIR)/test-$(LIB) 
-	gcov -o$(TESTODIR) $(SRCDIR)/*.c ./run-all-tests
+	$(CC) $(TESTS) -o $(OUTDIR)/run-all-tests -I./test $(CFLAGS) $(OUTDIR)/test-$(LIB) 
+	gcov -o$(TESTODIR) $(SRCDIR)/*.c $(OUTDIR)/run-all-tests
 
 gentests:
 	$(TESTDIR)/make-tests.sh $(TESTDIR)/*.c > $(TESTDIR)/AllTests.c
@@ -84,5 +84,4 @@ profile: buildprofilelib
 # Clean
 
 clean:
-	rm -f run-all-tests callgrind.out.*
 	rm -rf $(OUTDIR)
