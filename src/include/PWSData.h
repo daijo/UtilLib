@@ -1,3 +1,6 @@
+#ifndef __PWSDATA_H__
+#define __PWSDATA_H__
+
 #include <stdbool.h>
 
 typedef struct __PWSData PWSData;
@@ -16,3 +19,5 @@ bool hasComparator(PWSData* data);
 
 /* Compares two PWSData. */
 int compare(PWSData* data1, PWSData* data2);
+
+#endif

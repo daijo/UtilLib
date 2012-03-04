@@ -1,3 +1,6 @@
+#ifndef __PWSLINKEDLIST_H__
+#define __PWSLINKEDLIST_H__
+
 #include <stdbool.h>
 
 #include "PWSData.h"
@@ -26,3 +29,5 @@ PWSData* removeByIndex(PWSLinkedList* list, int index);
 
 int count(PWSLinkedList *list);
 bool isEmpty(PWSLinkedList *list);
+
+#endif
