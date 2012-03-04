@@ -15,6 +15,14 @@ To test:
 
     make test
 
+Coverage output is saved in $(OUTDIR)/gcov.
+
+To profile:
+
+    make profile
+
+Profiling output is saved in $(OUTDIR)/profile.log.
+
 To clean:
 
     make clean

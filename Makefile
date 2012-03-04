@@ -81,7 +81,15 @@ $(OUTDIR)/test-$(LIB): $(TESTOBJ) $(OUTDIR)/.d
 
 # Profile
 
-profile: buildprofilelib
+profile: $(OUTDIR)/profile.log
+
+$(OUTDIR)/profile.log: $(OUTDIR)/callgrind
+	callgrind_annotate $< > $@
+	cat $@
+
+$(OUTDIR)/callgrind: $(OUTDIR)/test-$(LIB) gentests $(TESTS)
+	clang $(TESTS) -o $(OUTDIR)/run-all-tests -I./test $(CFLAGS) $(OUTDIR)/test-$(LIB) -fprofile-arcs -ftest-coverage
+	valgrind --dsymutil=yes --tool=callgrind --callgrind-out-file=$@ $(OUTDIR)/run-all-tests
 
 # Clean
 
