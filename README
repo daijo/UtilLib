@@ -35,7 +35,8 @@ Sort out the Makefile (lcov, valgrind).
 Data:
 
 PWSData (add hash).
-PWSList 
+PWSList
+PWSSkipList
 PWSTree
 PWSHashMap (Red–black tree?)
 PWSGraph
