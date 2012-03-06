@@ -14,6 +14,7 @@ struct __PWSLinkedList {
 	ListNode *head;
         ListNode *tail;
         int count;
+	bool reversed;
 };
 
 static ListNode* initNodeWithData(PWSData *data)
@@ -27,9 +28,14 @@ static ListNode* initNodeWithData(PWSData *data)
 PWSLinkedList* initLinkedList()
 {
 	PWSLinkedList* list = (PWSLinkedList*)malloc(sizeof(PWSLinkedList));
-	memset(list, 0, sizeof(PWSLinkedList));
+	memset(list, 0, sizeof(PWSLinkedList)); /* count and reversed = 0/false */
         return list;
 }
+
+/*PWSLinkedList* initLinkedListFromArray(PWSArray* array, int size)
+{
+
+}*/
 
 void freeLinkedList(PWSLinkedList *list)
 {
@@ -95,6 +101,18 @@ PWSData* removeByValue(PWSLinkedList* list, PWSData* data)
 }
 
 PWSData* removeByIndex(PWSLinkedList* list, int index)
+{
+}
+
+void map(PWSLinkedList* list, void* (*mappingFunction)(void*))
+{
+}
+
+PWSData* reduce(PWSLinkedList* list, void* (*reducingFunction)(void*, void*), void* startValue)
+{
+}
+
+void reverse(PWSLinkedList* list)
 {
 }
 

@@ -1,7 +1,7 @@
 #ifndef __PWSDATA_H__
 #define __PWSDATA_H__
 
-#include <stdbool.h>
+/*#include <stdbool.h>*/
 
 typedef struct __PWSData PWSData;
 
@@ -12,12 +12,12 @@ PWSData* initData(void *innerData);
 void* freeData(PWSData *data);
 
 /* Sets function pointer to comparator function. */
-void setComparator(PWSData *data, int (*compareFunction)(void*, void*));
+/*void setComparator(PWSData *data, int (*compareFunction)(void*, void*));*/
 
 /* Checks if the PWSData has a associated comparator function. */
-bool hasComparator(PWSData* data);
+/*bool hasComparator(PWSData* data);*/
 
 /* Compares two PWSData. */
-int compare(PWSData* data1, PWSData* data2);
+/*int compare(PWSData* data1, PWSData* data2);*/
 
 #endif

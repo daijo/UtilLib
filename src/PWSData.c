@@ -8,7 +8,7 @@ typedef struct __PWSData PWSData;
 
 struct __PWSData {
 	void *innerData;
-	int (*compareFunction)(void*, void*); 
+	/*int (*compareFunction)(void*, void*);*/
 };
 
 PWSData* initData(void *innerData)
@@ -26,7 +26,7 @@ void* freeData(PWSData *data)
 	return innerData;
 }
 
-void setComparator(PWSData *data, int (*compareFunction)(void*, void*))
+/*void setComparator(PWSData *data, int (*compareFunction)(void*, void*))
 {
 	data->compareFunction = compareFunction;
 }
@@ -49,5 +49,5 @@ int compare(PWSData* data1, PWSData* data2)
 		assert(false);
 	}
 	return data1->compareFunction(data1->innerData, data2->innerData);
-}
+}*/
 

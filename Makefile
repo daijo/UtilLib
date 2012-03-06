@@ -21,10 +21,10 @@ endif
 
 LIB = libAlgData.a
 
-_DEPS = PWSData.h PWSLinkedList.h PWSHashFunctions.h
+_DEPS = PWSHeap.h PWSData.h PWSLinkedList.h PWSHashFunctions.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = PWSData.o PWSLinkedList.o PWSHashFunctions.o
+_OBJ = PWSHeap.o PWSData.o PWSLinkedList.o PWSHashFunctions.o
 ifdef CROSS_COMPILE
 	ODIR = $(OUTDIR)/$(CROSS_COMPILE)obj
 	OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
@@ -33,7 +33,7 @@ else
 	TESTOBJ = $(patsubst %,$(TESTODIR)/%,$(_OBJ))
 endif
 
-_TESTS = PWSDataTest.o PWSLinkedListTest.o CuTest.o AllTests.o
+_TESTS = PWSHeapTest.o PWSDataTest.o PWSLinkedListTest.o CuTest.o AllTests.o
 TESTS = $(patsubst %,$(TESTODIR)/%,$(_TESTS))
 
 # Make stuff
@@ -61,16 +61,16 @@ $(OUTDIR)/$(CROSS_COMPILE)$(LIB): $(OBJ) $(OUTDIR)/.d
 
 # Test
 
-test: $(OUTDIR)/test-$(LIB) gentests $(TESTS) $(OUTDIR)/gcov/.d
+test: $(OUTDIR)/test-$(LIB) $(TESTS) $(OUTDIR)/gcov/.d
 	clang $(TESTS) -o $(OUTDIR)/run-all-tests -I./test $(CFLAGS) $(OUTDIR)/test-$(LIB) -fprofile-arcs -ftest-coverage
 	$(OUTDIR)/run-all-tests
 	gcov -l -o$(TESTODIR) $(SRCDIR)/*.c 2> /dev/null > $(OUTDIR)/gcov/summary.txt
 	mv *.gcov $(OUTDIR)/gcov
 
-gentests:
+$(TESTDIR)/AllTests.c: $(TESTDIR)/*.c
 	$(TESTDIR)/make-tests.sh $(TESTDIR)/*.c > $(TESTDIR)/AllTests.c
 
-$(TESTODIR)/%.o: $(TESTDIR)/%.c $(DEPS) $(TESTODIR)/.d
+$(TESTODIR)/%.o: $(TESTDIR)/%.c $(DEPS) $(TESTODIR)/.d $(TESTDIR)/AllTests.c
 	clang -c -o $@ $< $(CFLAGS)
 
 $(TESTODIR)/%.o: $(SRCDIR)/%.c $(DEPS) $(TESTODIR)/.d
@@ -95,3 +95,4 @@ $(OUTDIR)/callgrind: $(OUTDIR)/test-$(LIB) gentests $(TESTS)
 
 clean:
 	rm -rf $(OUTDIR)
+	rm $(TESTDIR)/AllTests.c
