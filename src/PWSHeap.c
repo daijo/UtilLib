@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "PWSHeap.h"
 
@@ -56,11 +57,15 @@ PWSMemory* alloc(size_t size)
 	header->secondMemoryGuard = (int*)ptr;
 	*(header->secondMemoryGuard) = MEMORY_GUARD;
 
+	assert(memoryGuardsUntouched(header->memory));
+
 	return header->memory;
 }
 
 void retain(PWSMemory *memory)
 {
+	assert(memoryGuardsUntouched(memory));
+
 	PWSMemoryHeader *header = headerFromMemory(memory);
 
 	header->retainCount++;
@@ -68,6 +73,8 @@ void retain(PWSMemory *memory)
 
 void release(PWSMemory *memory)
 {
+	assert(memoryGuardsUntouched(memory));
+
 	PWSMemoryHeader *header = headerFromMemory(memory);
 
 	header->retainCount--;
@@ -79,11 +86,15 @@ void release(PWSMemory *memory)
 
 void autorelease(PWSMemory *memory)
 {
+	assert(memoryGuardsUntouched(memory));
+
 
 }
 
 int retainCount(PWSMemory *memory)
 {
+	assert(memoryGuardsUntouched(memory));
+
 	PWSMemoryHeader *header = headerFromMemory(memory);
 
 	return header->retainCount;
@@ -96,9 +107,7 @@ bool memoryGuardsUntouched(PWSMemory *memory)
 	return *(header->firstMemoryGuard) == MEMORY_GUARD && *(header->secondMemoryGuard) == MEMORY_GUARD;
 }
 
-/* Functions called by the system! */
-
-bool setupHeap(int autoReleasePoolSize)
+bool setupAutoReleasePool(int autoReleasePoolSize)
 {
 	theHeap.autoReleasePool = (PWSMemoryHeader*)calloc(sizeof(PWSMemoryHeader*), autoReleasePoolSize);
 	theHeap.freePoolIndex = 0;
@@ -106,7 +115,7 @@ bool setupHeap(int autoReleasePoolSize)
 	return theHeap.autoReleasePool != NULL;
 }
 
-void teardownHeap()
+void teardownAutoReleasePool()
 {
 	emptyAutoReleasePool();
 	free(theHeap.autoReleasePool);

@@ -24,18 +24,14 @@ int retainCount(PWSMemory *memory);
 /* Returns true if the memory guards haven't been overrun. */
 bool memoryGuardsUntouched(PWSMemory *memory);
 
-/* Functions called by the system! */
+bool setupAutoReleasePool(int autoReleasePoolSize);
 
-/* Prepare the PWSHeap before use. */
-bool setupHeap(int autoReleasePoolSize);
-
-/* Prepare the PWSHeap before shutdown. */
-void teardownHeap();
+/* Empties and deallocates the pool. */
+void teardownAutoReleasePool();
 
 /* Call at end of each runloop. */
 void emptyAutoReleasePool();
 
-/* Heap query methods. */
 int autoReleasePoolCount();
 
 bool spaceLeftInPool();

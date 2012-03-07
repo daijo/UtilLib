@@ -3,18 +3,18 @@
 
 #define AUTO_RELEASE_POOL_SIZE 30
 
-void TestPWSHeapSetupAndTeardown(CuTest* tc)
+void TestPWSHeapSetupAndTeardownAutoReleasePool(CuTest* tc)
 {
 
 	for (int i = 0; i < 5; i++) {
 
-		CuAssertTrue(tc, setupHeap(AUTO_RELEASE_POOL_SIZE));
+		CuAssertTrue(tc, setupAutoReleasePool(AUTO_RELEASE_POOL_SIZE));
 
 		CuAssertTrue(tc, spaceLeftInPool());
 
 		CuAssertTrue(tc, autoReleasePoolCount() == 0);
 
-		teardownHeap();	
+		teardownAutoReleasePool();	
 
 		CuAssertTrue(tc, !spaceLeftInPool());
 	}
@@ -22,15 +22,12 @@ void TestPWSHeapSetupAndTeardown(CuTest* tc)
 
 void TestPWSHeapAllocAndRelease(CuTest* tc)
 {
-	setupHeap(AUTO_RELEASE_POOL_SIZE);
 
 	PWSMemory* memory = alloc(sizeof(int));
 
 	CuAssertTrue(tc, memory != NULL);
 	CuAssertTrue(tc, retainCount(memory) == 1);
 	CuAssertTrue(tc, memoryGuardsUntouched(memory));
-	
-	teardownHeap();	
 }
 
 
