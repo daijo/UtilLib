@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef char PWSMemory;
 
@@ -19,12 +20,13 @@ void release(PWSMemory *memory);
 void autorelease(PWSMemory *memory);
 
 /* Returns the memorys retain count. */
-int retainCount(PWSMemory *memory);
+uint32_t retainCount(PWSMemory *memory);
 
 /* Returns true if the memory guards haven't been overrun. */
 bool memoryGuardsUntouched(PWSMemory *memory);
 
-bool setupAutoReleasePool(int autoReleasePoolSize);
+/* Allocates a autoReleasePool with given size. */
+bool setupAutoReleasePool(uint32_t autoReleasePoolSize);
 
 /* Empties and deallocates the pool. */
 void teardownAutoReleasePool();
@@ -32,7 +34,7 @@ void teardownAutoReleasePool();
 /* Call at end of each runloop. */
 void emptyAutoReleasePool();
 
-int autoReleasePoolCount();
+uint32_t autoReleasePoolCount();
 
 bool spaceLeftInPool();
 

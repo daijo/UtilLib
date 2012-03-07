@@ -13,17 +13,17 @@ typedef struct __PWSMemoryHeader PWSMemoryHeader;
 struct PWSHeap
 {
 	PWSMemoryHeader* autoReleasePool;
-	int freePoolIndex;
-	int autoReleasePoolSize;
+	uint32_t freePoolIndex;
+	uint32_t autoReleasePoolSize;
 };
 
 struct __PWSMemoryHeader
 {
-	unsigned int retainCount;
+	uint32_t retainCount;
 	size_t size;
-	int *firstMemoryGuard;
+	uint32_t *firstMemoryGuard;
 	PWSMemory *memory;
-	int *secondMemoryGuard;
+	uint32_t *secondMemoryGuard;
 };
 
 //static void addToPool(PWSMemory *memory);
@@ -39,22 +39,22 @@ PWSMemory* alloc(size_t size)
 	PWSMemory *ptr;
 
 	/* Get the memory. */
-	header = (PWSMemoryHeader*)calloc(sizeof(PWSMemoryHeader) + size + 2 * sizeof(int), 1);
+	header = (PWSMemoryHeader*)calloc(sizeof(PWSMemoryHeader) + size + 2 * sizeof(uint32_t), 1);
 	header->retainCount = 1;
 	ptr = (PWSMemory*)header;
 
 	/* Get first memory guard pointer. */
 	ptr += sizeof(PWSMemoryHeader);
-	header->firstMemoryGuard = (int*)ptr;
+	header->firstMemoryGuard = (uint32_t*)ptr;
 	*(header->firstMemoryGuard) = MEMORY_GUARD;
 
 	/* Get user memory pointer. */
-	ptr += sizeof(int);
+	ptr += sizeof(uint32_t);
 	header->memory = ptr;
 	
 	/* Get second memory guard pointer. */
 	ptr += size;	
-	header->secondMemoryGuard = (int*)ptr;
+	header->secondMemoryGuard = (uint32_t*)ptr;
 	*(header->secondMemoryGuard) = MEMORY_GUARD;
 
 	assert(memoryGuardsUntouched(header->memory));
@@ -91,7 +91,7 @@ void autorelease(PWSMemory *memory)
 
 }
 
-int retainCount(PWSMemory *memory)
+uint32_t retainCount(PWSMemory *memory)
 {
 	assert(memoryGuardsUntouched(memory));
 
@@ -107,7 +107,7 @@ bool memoryGuardsUntouched(PWSMemory *memory)
 	return *(header->firstMemoryGuard) == MEMORY_GUARD && *(header->secondMemoryGuard) == MEMORY_GUARD;
 }
 
-bool setupAutoReleasePool(int autoReleasePoolSize)
+bool setupAutoReleasePool(uint32_t autoReleasePoolSize)
 {
 	theHeap.autoReleasePool = (PWSMemoryHeader*)calloc(sizeof(PWSMemoryHeader*), autoReleasePoolSize);
 	theHeap.freePoolIndex = 0;
@@ -128,7 +128,7 @@ void emptyAutoReleasePool()
 
 }
 
-int autoReleasePoolCount()
+uint32_t autoReleasePoolCount()
 {
 	return theHeap.freePoolIndex;
 }
@@ -147,5 +147,5 @@ bool spaceLeftInPool()
 
 static PWSMemoryHeader* headerFromMemory(PWSMemory *memory)
 {
-	return (PWSMemoryHeader*)(memory - (sizeof(PWSMemoryHeader) + sizeof(int)));
+	return (PWSMemoryHeader*)(memory - (sizeof(PWSMemoryHeader) + sizeof(uint32_t)));
 }
