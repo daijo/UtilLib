@@ -91,8 +91,8 @@ void release(PWSMemory *memory)
 
 void autorelease(PWSMemory *memory)
 {
-	assert(memoryGuardsUntouched(memory) && "Memory boundries not overrun.");
-	assert(spaceLeftInPool() && "Pool got space.");
+	assert(memoryGuardsUntouched(memory));
+	assert(spaceLeftInPool());
 
 	PWSMemoryHeader *header = headerFromMemory(memory);
 
@@ -144,7 +144,7 @@ void emptyAutoReleasePool()
 		}
 	}
 
-	assert((theHeap.freePoolIndex == 0) && "The pool is empty.");
+	assert((theHeap.freePoolIndex == 0));
 }
 
 uint32_t autoReleasePoolCount()
