@@ -43,6 +43,7 @@ PWSGraph
 
 Algorithms:
 
+MergeSort
 QuickSort
 HeapSort
 Dijkstra
