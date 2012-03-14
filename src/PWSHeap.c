@@ -1,3 +1,8 @@
+/* 0x50 0x57 0x53 
+ * Copyright 2012 Patchwork Solutions AB. All rights reserved.
+ * Author: Daniel Hjort
+ */
+
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -12,7 +17,7 @@ typedef struct __PWSMemoryHeader PWSMemoryHeader;
 
 struct PWSHeap
 {
-	PWSMemoryHeader* autoReleasePool;
+	PWSMemoryHeader** autoReleasePool; 
 	uint32_t freePoolIndex;
 	uint32_t autoReleasePoolSize;
 };
@@ -26,7 +31,7 @@ struct __PWSMemoryHeader
 	uint32_t *secondMemoryGuard;
 };
 
-//static void addToPool(PWSMemory *memory);
+static void addToPool(PWSMemoryHeader *header);
 static PWSMemoryHeader* headerFromMemory(PWSMemory *memory);
 
 static struct PWSHeap theHeap;
@@ -86,9 +91,13 @@ void release(PWSMemory *memory)
 
 void autorelease(PWSMemory *memory)
 {
-	assert(memoryGuardsUntouched(memory));
+	assert(memoryGuardsUntouched(memory) && "Memory boundries not overrun.");
+	assert(spaceLeftInPool() && "Pool got space.");
 
+	PWSMemoryHeader *header = headerFromMemory(memory);
 
+	header->retainCount--;
+	addToPool(header);
 }
 
 uint32_t retainCount(PWSMemory *memory)
@@ -109,7 +118,7 @@ bool memoryGuardsUntouched(PWSMemory *memory)
 
 bool setupAutoReleasePool(uint32_t autoReleasePoolSize)
 {
-	theHeap.autoReleasePool = (PWSMemoryHeader*)calloc(sizeof(PWSMemoryHeader*), autoReleasePoolSize);
+	theHeap.autoReleasePool = (PWSMemoryHeader**)calloc(sizeof(PWSMemoryHeader*), autoReleasePoolSize);
 	theHeap.freePoolIndex = 0;
 	theHeap.autoReleasePoolSize = autoReleasePoolSize;
 	return theHeap.autoReleasePool != NULL;
@@ -125,7 +134,17 @@ void teardownAutoReleasePool()
 
 void emptyAutoReleasePool()
 {
+	PWSMemoryHeader* header;
 
+	for (int i = theHeap.freePoolIndex; i > 0 && i <= theHeap.freePoolIndex; i--) {
+
+		header = theHeap.autoReleasePool[--theHeap.freePoolIndex];
+		if (header->retainCount == 0) {
+			free(header);
+		}
+	}
+
+	assert((theHeap.freePoolIndex == 0) && "The pool is empty.");
 }
 
 uint32_t autoReleasePoolCount()
@@ -140,10 +159,11 @@ bool spaceLeftInPool()
 
 /* Private methods implementations. */
 
-/*static void addToPool(PWSMemory *memory)
+static void addToPool(PWSMemoryHeader *header)
 {
-
-}*/
+	theHeap.autoReleasePool[theHeap.freePoolIndex] = header;
+	theHeap.freePoolIndex++;
+}
 
 static PWSMemoryHeader* headerFromMemory(PWSMemory *memory)
 {

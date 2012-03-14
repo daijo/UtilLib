@@ -1,3 +1,8 @@
+/* 0x50 0x57 0x53 
+ * Copyright 2012 Patchwork Solutions AB. All rights reserved.
+ * Author: Daniel Hjort
+ */
+
 #include <limits.h>
 
 #include "PWSHeap.h"
@@ -84,11 +89,10 @@ void TestPWSHeapAllocAndAutoRelease(CuTest* tc)
 	CuAssertTrue(tc, spaceLeftInPool());
 	CuAssertTrue(tc, autoReleasePoolCount() == 0);
 
-
 	for (int i = 0; i < 5; i++) {
 
 		CuAssertTrue(tc, spaceLeftInPool() == (i < 5));
-		CuAssertTrue(tc, autoReleasePoolCount() == (5 - i));
+		CuAssertTrue(tc, autoReleasePoolCount() == i);
 
 		autorelease((PWSMemory*)memories[i]);
 	}

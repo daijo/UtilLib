@@ -1,3 +1,8 @@
+/* 0x50 0x57 0x53 
+ * Copyright 2012 Patchwork Solutions AB. All rights reserved.
+ * Author: Daniel Hjort
+ */
+
 #ifndef __PWSDATA_H__
 #define __PWSDATA_H__
 

@@ -1,3 +1,8 @@
+/* 0x50 0x57 0x53 
+ * Copyright 2012 Patchwork Solutions AB. All rights reserved.
+ * Author: Daniel Hjort
+ */
+
 #include <stdlib.h>
 
 #include "PWSData.h"

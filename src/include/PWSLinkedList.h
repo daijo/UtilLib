@@ -1,3 +1,8 @@
+/* 0x50 0x57 0x53 
+ * Copyright 2012 Patchwork Solutions AB. All rights reserved.
+ * Author: Daniel Hjort
+ */
+
 #ifndef __PWSLINKEDLIST_H__
 #define __PWSLINKEDLIST_H__
 
