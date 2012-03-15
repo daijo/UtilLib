@@ -25,12 +25,14 @@ struct PWSHeap
 struct __PWSMemoryHeader
 {
 	uint32_t retainCount;
+	void (*deallocFunction)(PWSMemory*);
 	size_t size;
 	uint32_t *firstMemoryGuard;
 	PWSMemory *memory;
 	uint32_t *secondMemoryGuard;
 };
 
+static void callDeallocAndFreeIfRetainCountIsZero(PWSMemoryHeader *header);
 static void addToPool(PWSMemoryHeader *header);
 static PWSMemoryHeader* headerFromMemory(PWSMemory *memory);
 
@@ -38,7 +40,7 @@ static struct PWSHeap theHeap;
 
 /* Public method implementations. */
 
-PWSMemory* alloc(size_t size)
+PWSMemory* alloc(size_t size, void (*deallocFunction)(PWSMemory*))
 {
 	PWSMemoryHeader *header;
 	PWSMemory *ptr;
@@ -46,6 +48,7 @@ PWSMemory* alloc(size_t size)
 	/* Get the memory. */
 	header = (PWSMemoryHeader*)calloc(sizeof(PWSMemoryHeader) + size + 2 * sizeof(uint32_t), 1);
 	header->retainCount = 1;
+	header->deallocFunction = deallocFunction;
 	ptr = (PWSMemory*)header;
 
 	/* Get first memory guard pointer. */
@@ -84,9 +87,7 @@ void release(PWSMemory *memory)
 
 	header->retainCount--;
 
-	if (header->retainCount == 0) {
-		free(header);
-	}
+	callDeallocAndFreeIfRetainCountIsZero(header);	
 }
 
 void autorelease(PWSMemory *memory)
@@ -97,7 +98,8 @@ void autorelease(PWSMemory *memory)
 	PWSMemoryHeader *header = headerFromMemory(memory);
 
 	header->retainCount--;
-	addToPool(header);
+	if(header->retainCount == 0)
+		addToPool(header);
 }
 
 uint32_t retainCount(PWSMemory *memory)
@@ -139,9 +141,7 @@ void emptyAutoReleasePool()
 	for (int i = theHeap.freePoolIndex; i > 0 && i <= theHeap.freePoolIndex; i--) {
 
 		header = theHeap.autoReleasePool[--theHeap.freePoolIndex];
-		if (header->retainCount == 0) {
-			free(header);
-		}
+		callDeallocAndFreeIfRetainCountIsZero(header);	
 	}
 
 	assert((theHeap.freePoolIndex == 0));
@@ -158,6 +158,14 @@ bool spaceLeftInPool()
 }
 
 /* Private methods implementations. */
+
+static void callDeallocAndFreeIfRetainCountIsZero(PWSMemoryHeader *header)
+{
+	if (header->retainCount == 0) {
+		header->deallocFunction(header->memory);
+		free(header);
+	}
+}
 
 static void addToPool(PWSMemoryHeader *header)
 {

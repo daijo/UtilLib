@@ -8,33 +8,38 @@
 
 #include <stdbool.h>
 
-#include "PWSData.h"
+#include "PWSHeap.h"
 
 typedef struct __PWSLinkedList PWSLinkedList;
 
+/* Returns a retained list. Will call release on all the elements when deallocated. */
 PWSLinkedList* initLinkedList();
 /*PWSLinkedList* initLinkedListFromArray(PWSArray* array, int size);*/
-void freeLinkedList(PWSLinkedList *list); /* free remaining data? */
+void freeLinkedList(PWSLinkedList *list); /* Deprecated, call release directly on list. */
 
-int addLast(PWSLinkedList *list, PWSData* data);
-void addFirst(PWSLinkedList *list, PWSData* data);
-int addAtIndex(PWSLinkedList *list, PWSData* data, int index);
+/* Add elements, will be retained by the list. */
+int addLast(PWSLinkedList *list, PWSMemory* data);
+void addFirst(PWSLinkedList *list, PWSMemory* data);
+int addAtIndex(PWSLinkedList *list, PWSMemory* data, int index);
 
-PWSData* getFirst(PWSLinkedList* list);
-PWSLinkedList* getRest(PWSLinkedList* list); /* deep copy data? */
-PWSData* getLast(PWSLinkedList* list);
-PWSData* getByReference(PWSLinkedList* list, PWSData* data);
-PWSData* getByValue(PWSLinkedList* list, PWSData* data, int (*compareFunction)(void*, void*));
-PWSData* getByIndex(PWSLinkedList* list, int index);
+PWSMemory* getFirst(PWSLinkedList* list);
+/* The elements isn't copied but they are retained again so all list can be safely released. */
+PWSLinkedList* getRest(PWSLinkedList* list);
 
-PWSData* removeFirst(PWSLinkedList* list);
-PWSData* removeLast(PWSLinkedList* list);
-PWSData* removeByReference(PWSLinkedList* list, PWSData* data);
-PWSData* removeByValue(PWSLinkedList* list, PWSData* data, int (*compareFunction)(void*, void*));
-PWSData* removeByIndex(PWSLinkedList* list, int index);
+PWSMemory* getLast(PWSLinkedList* list);
+PWSMemory* getByReference(PWSLinkedList* list, PWSMemory* data);
+PWSMemory* getByValue(PWSLinkedList* list, PWSMemory* data, int (*compareFunction)(void*, void*));
+PWSMemory* getByIndex(PWSLinkedList* list, int index);
+
+/* Remove elements, will me autoreleased by the list. */
+PWSMemory* removeFirst(PWSLinkedList* list);
+PWSMemory* removeLast(PWSLinkedList* list);
+PWSMemory* removeByReference(PWSLinkedList* list, PWSMemory* data);
+PWSMemory* removeByValue(PWSLinkedList* list, PWSMemory* data, int (*compareFunction)(void*, void*));
+PWSMemory* removeByIndex(PWSLinkedList* list, int index);
 
 void map(PWSLinkedList* list, void* (*mappingFunction)(void*));
-PWSData* reduce(PWSLinkedList* list, void* (*reducingFunction)(void*, void*), void* startValue);
+PWSMemory* reduce(PWSLinkedList* list, void* (*reducingFunction)(void*, void*), void* startValue);
 
 void reverse(PWSLinkedList* list);
 

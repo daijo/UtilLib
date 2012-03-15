@@ -10,7 +10,7 @@
 
 typedef struct __ListNode ListNode;
 struct __ListNode {
-	PWSData *data;
+	PWSMemory *data;
 	ListNode *previous;
 	ListNode *next;
 };
@@ -22,7 +22,7 @@ struct __PWSLinkedList {
 	bool reversed;
 };
 
-static ListNode* initNodeWithData(PWSData *data)
+static ListNode* initNodeWithData(PWSMemory *data)
 {
 	ListNode* node = (ListNode*)malloc(sizeof(ListNode));
 	memset(node, 0, sizeof(ListNode));
@@ -42,12 +42,7 @@ PWSLinkedList* initLinkedList()
 
 }*/
 
-void freeLinkedList(PWSLinkedList *list)
-{
-	free(list); /* For now we assume all elements have been removed and freed. */
-}
-
-int addLast(PWSLinkedList *list, PWSData* data)
+int addLast(PWSLinkedList *list, PWSMemory* data)
 {
 	ListNode* node = initNodeWithData(data);
 	node->previous = list->tail;
@@ -57,15 +52,15 @@ int addLast(PWSLinkedList *list, PWSData* data)
 	return list->count++;
 }
 
-/*void addFirst(PWSLinkedList *list, PWSData* data)
+/*void addFirst(PWSLinkedList *list, PWSMemory* data)
 {
 }
 
-int addAtIndex(PWSLinkedList *list, PWSData* data, int index)
+int addAtIndex(PWSLinkedList *list, PWSMemory* data, int index)
 {
 }
 
-PWSData* getFirst(PWSLinkedList* list)
+PWSMemory* getFirst(PWSLinkedList* list)
 {
 }
 
@@ -73,39 +68,39 @@ PWSLinkedList* getRest(PWSLinkedList* list)
 {
 }
 
-PWSData* getLast(PWSLinkedList* list)
+PWSMemory* getLast(PWSLinkedList* list)
 {
 }
 
-PWSData* getByReference(PWSLinkedList* list, PWSData* data)
+PWSMemory* getByReference(PWSLinkedList* list, PWSMemory* data)
 {
 }
 
-PWSData* getByValue(PWSLinkedList* list, PWSData* data)
+PWSMemory* getByValue(PWSLinkedList* list, PWSMemory* data)
 {
 }
 
-PWSData* getByIndex(PWSLinkedList* list, int index)
+PWSMemory* getByIndex(PWSLinkedList* list, int index)
 {
 }
 
-PWSData* removeFirst(PWSLinkedList* list)
+PWSMemory* removeFirst(PWSLinkedList* list)
 {
 }
 
-PWSData* removeLast(PWSLinkedList* list)
+PWSMemory* removeLast(PWSLinkedList* list)
 {
 }
 
-PWSData* removeByReference(PWSLinkedList* list, PWSData* data)
+PWSMemory* removeByReference(PWSLinkedList* list, PWSMemory* data)
 {
 }
 
-PWSData* removeByValue(PWSLinkedList* list, PWSData* data)
+PWSMemory* removeByValue(PWSLinkedList* list, PWSMemory* data)
 {
 }
 
-PWSData* removeByIndex(PWSLinkedList* list, int index)
+PWSMemory* removeByIndex(PWSLinkedList* list, int index)
 {
 }
 
@@ -113,7 +108,7 @@ void map(PWSLinkedList* list, void* (*mappingFunction)(void*))
 {
 }
 
-PWSData* reduce(PWSLinkedList* list, void* (*reducingFunction)(void*, void*), void* startValue)
+PWSMemory* reduce(PWSLinkedList* list, void* (*reducingFunction)(void*, void*), void* startValue)
 {
 }
 
