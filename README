@@ -27,14 +27,16 @@ To clean:
 
     make clean
 
+Content
+-------
+
+PWSHeap - A small memory handling utility with reference counting, autorelease and buffer overrun checks.
+
 Todo
 ----
 
-Sort out the Makefile (lcov, valgrind).
-
 Data:
 
-PWSData (add hash).
 PWSList
 PWSSkipList
 PWSTree
