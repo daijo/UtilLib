@@ -36,10 +36,10 @@ bool memoryGuardsUntouched(PWSMemory *memory);
 /* Allocates a autoReleasePool with given size. */
 bool setupAutoReleasePool(uint32_t autoReleasePoolSize);
 
-/* Empties the pool. All memories with retain count 0 is freed after their deallocFunction is called. */
+/* Deallocates the autoReleasePool. */
 void teardownAutoReleasePool();
 
-/* Call at end of each runloop. */
+/* Empties the pool. All memories with retain count 0 is freed after their deallocFunction is called. Call at end of each runloop. */
 void emptyAutoReleasePool();
 
 uint32_t autoReleasePoolCount();
