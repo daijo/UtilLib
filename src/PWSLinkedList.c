@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "PWSLinkedList.h"
+#include "PWSHeap.h"
 
 typedef struct __ListNode ListNode;
 struct __ListNode {
@@ -22,19 +23,31 @@ struct __PWSLinkedList {
 	bool reversed;
 };
 
-static ListNode* initNodeWithData(PWSMemory *data)
+static void deallocNode(PWSMemory* memory)
 {
-	ListNode* node = (ListNode*)malloc(sizeof(ListNode));
-	memset(node, 0, sizeof(ListNode));
+	ListNode* node = (ListNode*)memory;
+
+	release(node->data);
+	release((PWSMemory*)node->previous);
+	release((PWSMemory*)node->next);
+}
+
+static void deallocList(PWSMemory* list)
+{
+	// call free on every node
+	// mapNode(list, &deallocNode);
+}
+
+static ListNode* nodeWithData(PWSMemory *data)
+{
+	ListNode* node = (ListNode*)alloc(sizeof(ListNode), &deallocNode);
 	node->data = data;
 	return node;
 }
 
-PWSLinkedList* initLinkedList()
+PWSLinkedList* linkedList()
 {
-	PWSLinkedList* list = (PWSLinkedList*)malloc(sizeof(PWSLinkedList));
-	memset(list, 0, sizeof(PWSLinkedList)); /* count and reversed = 0/false */
-        return list;
+	return (PWSLinkedList*)alloc(sizeof(PWSLinkedList), &deallocList);
 }
 
 /*PWSLinkedList* initLinkedListFromArray(PWSArray* array, int size)
@@ -44,7 +57,7 @@ PWSLinkedList* initLinkedList()
 
 int addLast(PWSLinkedList *list, PWSMemory* data)
 {
-	ListNode* node = initNodeWithData(data);
+	ListNode* node = nodeWithData(data);
 	node->previous = list->tail;
 	if (list->tail != NULL)
 		list->tail->next = node;
@@ -114,12 +127,14 @@ PWSMemory* reduce(PWSLinkedList* list, void* (*reducingFunction)(void*, void*), 
 
 void reverse(PWSLinkedList* list)
 {
-}
+}i*/
 
 int count(PWSLinkedList *list)
 {
+	return list->count;
 }
 
 bool isEmpty(PWSLinkedList *list)
 {
-}*/
+	return list->count == 0;
+}

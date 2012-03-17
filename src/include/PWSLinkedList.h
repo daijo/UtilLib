@@ -12,10 +12,9 @@
 
 typedef struct __PWSLinkedList PWSLinkedList;
 
-/* Returns a retained list. Will call release on all the elements when deallocated. */
-PWSLinkedList* initLinkedList();
+/* Returns a retained list. Will call release on all the elements when deallocated. */ 
+PWSLinkedList* linkedList();
 /*PWSLinkedList* initLinkedListFromArray(PWSArray* array, int size);*/
-void freeLinkedList(PWSLinkedList *list); /* Deprecated, call release directly on list. */
 
 /* Add elements, will be retained by the list. */
 int addLast(PWSLinkedList *list, PWSMemory* data);

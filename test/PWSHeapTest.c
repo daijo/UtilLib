@@ -37,6 +37,7 @@ void TestPWSHeapAllocAndRelease(CuTest* tc)
 
 	int *memory;
 	deallocCount = 0;
+	uint32_t initialAllocCount = totalAllocCount();
 
 	for (int i = 0; i < 5; i++) {
 
@@ -52,12 +53,14 @@ void TestPWSHeapAllocAndRelease(CuTest* tc)
 	}
 
 	CuAssertTrue(tc, deallocCount == 5);
+	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
 
 void TestPWSHeapAllocRetainAndRelease(CuTest* tc)
 {
 
+	uint32_t initialAllocCount = totalAllocCount();
 	int *memory = (int*)alloc(sizeof(int), &test_dealloc);
 	deallocCount = 0;
 
@@ -83,12 +86,14 @@ void TestPWSHeapAllocRetainAndRelease(CuTest* tc)
 	release((PWSMemory*)memory);
 
 	CuAssertTrue(tc, deallocCount == 1);
+	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
 void TestPWSHeapAllocAndAutoRelease(CuTest* tc)
 {
 	int *memories[5];
 	deallocCount = 0;
+	uint32_t initialAllocCount = totalAllocCount();
 
 	for (int i = 0; i < 5; i++) {
 
@@ -121,4 +126,6 @@ void TestPWSHeapAllocAndAutoRelease(CuTest* tc)
 	CuAssertTrue(tc, deallocCount == 5);
 
 	teardownAutoReleasePool();
+
+	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }

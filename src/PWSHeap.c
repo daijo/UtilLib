@@ -37,6 +37,7 @@ static void addToPool(PWSMemoryHeader *header);
 static PWSMemoryHeader* headerFromMemory(PWSMemory *memory);
 
 static struct PWSHeap theHeap;
+static uint32_t totalAllocCounter = 0;
 
 /* Public method implementations. */
 
@@ -67,16 +68,20 @@ PWSMemory* alloc(size_t size, void (*deallocFunction)(PWSMemory*))
 
 	assert(memoryGuardsUntouched(header->memory));
 
+	totalAllocCounter++;
+
 	return header->memory;
 }
 
-void retain(PWSMemory *memory)
+PWSMemory* retain(PWSMemory *memory)
 {
 	assert(memoryGuardsUntouched(memory));
 
 	PWSMemoryHeader *header = headerFromMemory(memory);
 
 	header->retainCount++;
+
+	return memory;
 }
 
 void release(PWSMemory *memory)
@@ -90,7 +95,7 @@ void release(PWSMemory *memory)
 	callDeallocAndFreeIfRetainCountIsZero(header);	
 }
 
-void autorelease(PWSMemory *memory)
+PWSMemory* autorelease(PWSMemory *memory)
 {
 	assert(memoryGuardsUntouched(memory));
 	assert(spaceLeftInPool());
@@ -100,6 +105,8 @@ void autorelease(PWSMemory *memory)
 	header->retainCount--;
 	if(header->retainCount == 0)
 		addToPool(header);
+
+	return memory;
 }
 
 uint32_t retainCount(PWSMemory *memory)
@@ -164,6 +171,7 @@ static void callDeallocAndFreeIfRetainCountIsZero(PWSMemoryHeader *header)
 	if (header->retainCount == 0) {
 		header->deallocFunction(header->memory);
 		free(header);
+		totalAllocCounter--;
 	}
 }
 
@@ -176,4 +184,9 @@ static void addToPool(PWSMemoryHeader *header)
 static PWSMemoryHeader* headerFromMemory(PWSMemory *memory)
 {
 	return (PWSMemoryHeader*)(memory - (sizeof(PWSMemoryHeader) + sizeof(uint32_t)));
+}
+
+uint32_t totalAllocCount()
+{
+	return totalAllocCounter;
 }

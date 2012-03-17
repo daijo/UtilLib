@@ -8,14 +8,25 @@
 #include "PWSLinkedList.h"
 #include "CuTest.h"
 
-void TestPWSLinkedListInit(CuTest* tc)
+void TestPWSLinkedListCreate(CuTest* tc)
 {
-        CuFail(tc, "Incomplete test case.");
+	uint32_t initialAllocCount = totalAllocCount();
+
+	PWSLinkedList* list = linkedList();
+	
+	CuAssertTrue(tc, isEmpty(list));
+	CuAssertTrue(tc, count(list) == 0);
+
+	release((PWSMemory*)list);
+
+	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
 void TestPWSLinkedListAddFirst(CuTest* tc)
 {
-        CuFail(tc, "Incomplete test case.");
+
+
+
 }
 
 void TestPWSLinkedListAddLast(CuTest* tc)

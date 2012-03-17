@@ -17,7 +17,7 @@ typedef char PWSMemory;
 PWSMemory* alloc(size_t size, void (*deallocFunction)(PWSMemory*));
 
 /* Retain memory that gets passed to you. Retain count increased by 1. */
-void retain(PWSMemory *memory);
+PWSMemory* retain(PWSMemory *memory);
 
 /* Release memory you don't reference. Retain count decreased by 1.
  * If the retain count reaches 0 the memory is freed after its deallocFunction is called. */
@@ -25,7 +25,7 @@ void release(PWSMemory *memory);
 
 /* Decreases the the memory's retain count by 1. If it reaches 0 it is put in the autorelease pool.
  * If the retain count is 0 when emptyAutoReleasePool() is called it is freed after its deallocFunction is called. */
-void autorelease(PWSMemory *memory);
+PWSMemory* autorelease(PWSMemory *memory);
 
 /* Returns the memorys retain count. */
 uint32_t retainCount(PWSMemory *memory);
@@ -45,5 +45,7 @@ void emptyAutoReleasePool();
 uint32_t autoReleasePoolCount();
 
 bool spaceLeftInPool();
+
+uint32_t totalAllocCount();
 
 #endif
