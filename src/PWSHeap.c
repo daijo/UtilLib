@@ -77,9 +77,12 @@ PWSMemory* retain(PWSMemory *memory)
 {
 	assert(memoryGuardsUntouched(memory));
 
-	PWSMemoryHeader *header = headerFromMemory(memory);
+	if(memory != NULL) {
 
-	header->retainCount++;
+		PWSMemoryHeader *header = headerFromMemory(memory);
+
+		header->retainCount++;
+	}
 
 	return memory;
 }
@@ -88,11 +91,14 @@ void release(PWSMemory *memory)
 {
 	assert(memoryGuardsUntouched(memory));
 
-	PWSMemoryHeader *header = headerFromMemory(memory);
+	if(memory != NULL) {
 
-	header->retainCount--;
+		PWSMemoryHeader *header = headerFromMemory(memory);
 
-	callDeallocAndFreeIfRetainCountIsZero(header);	
+		header->retainCount--;
+
+		callDeallocAndFreeIfRetainCountIsZero(header);
+	}	
 }
 
 PWSMemory* autorelease(PWSMemory *memory)
@@ -100,11 +106,14 @@ PWSMemory* autorelease(PWSMemory *memory)
 	assert(memoryGuardsUntouched(memory));
 	assert(spaceLeftInPool());
 
-	PWSMemoryHeader *header = headerFromMemory(memory);
+	if(memory != NULL) {
 
-	header->retainCount--;
-	if(header->retainCount == 0)
-		addToPool(header);
+		PWSMemoryHeader *header = headerFromMemory(memory);
+
+		header->retainCount--;
+		if(header->retainCount == 0)
+			addToPool(header);
+	}
 
 	return memory;
 }
@@ -113,16 +122,28 @@ uint32_t retainCount(PWSMemory *memory)
 {
 	assert(memoryGuardsUntouched(memory));
 
-	PWSMemoryHeader *header = headerFromMemory(memory);
+	uint32_t result = 0;
 
-	return header->retainCount;
+	if(memory != NULL) {
+
+		PWSMemoryHeader *header = headerFromMemory(memory);
+		result = header->retainCount;
+	}
+
+	return result;
 }
 
 bool memoryGuardsUntouched(PWSMemory *memory)
 {
-	PWSMemoryHeader *header = headerFromMemory(memory);
+	bool result = true;
 
-	return *(header->firstMemoryGuard) == MEMORY_GUARD && *(header->secondMemoryGuard) == MEMORY_GUARD;
+	if(memory != NULL) {
+
+		PWSMemoryHeader *header = headerFromMemory(memory);
+		result = *(header->firstMemoryGuard) == MEMORY_GUARD && *(header->secondMemoryGuard) == MEMORY_GUARD;
+	}
+	
+	return result;
 }
 
 bool setupAutoReleasePool(uint32_t autoReleasePoolSize)
