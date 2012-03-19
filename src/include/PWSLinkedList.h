@@ -37,8 +37,11 @@ PWSMemory* removeByReference(PWSLinkedList* list, PWSMemory* data);
 PWSMemory* removeByValue(PWSLinkedList* list, PWSMemory* data, int (*compareFunction)(void*, void*));
 PWSMemory* removeByIndex(PWSLinkedList* list, int index);
 
-void map(PWSLinkedList* list, void* (*mappingFunction)(void*));
-PWSMemory* reduce(PWSLinkedList* list, void* (*reducingFunction)(void*, void*), void* startValue);
+/* Applies the mapping function on all the nodes data. The mapping function modify it's input data. */
+void map(PWSLinkedList* list, void (*mappingFunction)(PWSMemory*));
+/* The memory acc act both as start value and as the result.
+ * The reducing function should accumulate its result in its first parameter. */
+void reduce(PWSLinkedList* list, void (*reducingFunction)(PWSMemory*, PWSMemory*), PWSMemory* acc);
 
 void reverse(PWSLinkedList* list);
 

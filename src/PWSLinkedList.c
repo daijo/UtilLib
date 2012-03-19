@@ -144,17 +144,29 @@ PWSMemory* removeByValue(PWSLinkedList* list, PWSMemory* data)
 
 PWSMemory* removeByIndex(PWSLinkedList* list, int index)
 {
-}
+}*/
 
-void map(PWSLinkedList* list, void* (*mappingFunction)(void*))
+void map(PWSLinkedList* list, void (*mappingFunction)(PWSMemory*))
 {
+	ListNode* node = list->head;
+
+	while(node != NULL) {
+		mappingFunction(node->data);
+		node = node->next;
+	}
 }
 
-PWSMemory* reduce(PWSLinkedList* list, void* (*reducingFunction)(void*, void*), void* startValue)
+void reduce(PWSLinkedList* list, void (*reducingFunction)(PWSMemory*, PWSMemory*), PWSMemory* acc)
 {
+	ListNode* node = list->head;
+
+	while(node != NULL) {
+		reducingFunction(acc, node->data);
+		node = node->next;
+	}	
 }
 
-void reverse(PWSLinkedList* list)
+/*void reverse(PWSLinkedList* list)
 {
 }i*/
 
