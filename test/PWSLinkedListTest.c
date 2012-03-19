@@ -8,6 +8,10 @@
 #include "PWSLinkedList.h"
 #include "CuTest.h"
 
+void dummyDealloc(PWSMemory* memory)
+{
+}
+
 void TestPWSLinkedListCreate(CuTest* tc)
 {
 	uint32_t initialAllocCount = totalAllocCount();
@@ -24,22 +28,88 @@ void TestPWSLinkedListCreate(CuTest* tc)
 
 void TestPWSLinkedListAddFirst(CuTest* tc)
 {
+	uint32_t initialAllocCount = totalAllocCount();
 
+	PWSLinkedList* list = linkedList();
 
+	for (int i = 1; i < 5; i++) {	
 
+		addFirst(list, alloc(sizeof(int), &dummyDealloc));
+
+		CuAssertTrue(tc, !isEmpty(list));
+		CuAssertTrue(tc, count(list) == i);
+	}
+
+	release((PWSMemory*)list);
+
+	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
 void TestPWSLinkedListAddLast(CuTest* tc)
 {
-        CuFail(tc, "Incomplete test case.");
+	uint32_t initialAllocCount = totalAllocCount();
+
+	PWSLinkedList* list = linkedList();
+
+	for (int i = 1; i < 5; i++) {	
+
+		addLast(list, alloc(200, &dummyDealloc));
+
+		CuAssertTrue(tc, !isEmpty(list));
+		CuAssertTrue(tc, count(list) == i);
+	}
+
+	release((PWSMemory*)list);
+
+	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
 void TestPWSLinkedListGetFirst(CuTest* tc)
 {
-        CuFail(tc, "Incomplete test case.");
+	uint32_t initialAllocCount = totalAllocCount();
+
+	PWSLinkedList* list = linkedList();
+	PWSMemory* data;
+
+	for (int i = 1; i < 5; i++) {	
+
+		data = alloc(sizeof(int), &dummyDealloc);
+
+		*data = i;
+
+		addLast(list, data);
+	}
+
+	data = getFirst(list);
+
+	CuAssertTrue(tc, 1 == *data);
+
+	release((PWSMemory*)list);
+
+	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
 void TestPWSLinkedListGetLast(CuTest* tc)
 {
-        CuFail(tc, "Incomplete test case.");
+	uint32_t initialAllocCount = totalAllocCount();
+
+	PWSLinkedList* list = linkedList();
+	PWSMemory* data;
+
+	for (int i = 1; i < 5; i++) {	
+
+		data = alloc(sizeof(int), &dummyDealloc);
+
+		*data = i;
+
+		addFirst(list, data);
+	}
+
+	data = getLast(list);
+
+	CuAssertTrue(tc, 1 == *data);
+
+	release((PWSMemory*)list);
+
+	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }

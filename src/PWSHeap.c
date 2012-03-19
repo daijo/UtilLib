@@ -50,6 +50,7 @@ PWSMemory* alloc(size_t size, void (*deallocFunction)(PWSMemory*))
 	header = (PWSMemoryHeader*)calloc(sizeof(PWSMemoryHeader) + size + 2 * sizeof(uint32_t), 1);
 	header->retainCount = 1;
 	header->deallocFunction = deallocFunction;
+	header->size = size;
 	ptr = (PWSMemory*)header;
 
 	/* Get first memory guard pointer. */
@@ -98,7 +99,7 @@ void release(PWSMemory *memory)
 		header->retainCount--;
 
 		callDeallocAndFreeIfRetainCountIsZero(header);
-	}	
+	}
 }
 
 PWSMemory* autorelease(PWSMemory *memory)
@@ -142,7 +143,7 @@ bool memoryGuardsUntouched(PWSMemory *memory)
 		PWSMemoryHeader *header = headerFromMemory(memory);
 		result = *(header->firstMemoryGuard) == MEMORY_GUARD && *(header->secondMemoryGuard) == MEMORY_GUARD;
 	}
-	
+
 	return result;
 }
 

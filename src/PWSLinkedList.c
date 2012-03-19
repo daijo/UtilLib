@@ -5,6 +5,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "PWSLinkedList.h"
 #include "PWSHeap.h"
@@ -27,15 +28,20 @@ static void deallocNode(PWSMemory* memory)
 {
 	ListNode* node = (ListNode*)memory;
 
-	release(node->data);
-	release((PWSMemory*)node->previous);
-	release((PWSMemory*)node->next);
+	release(node->data), node->data = NULL;
+	/* Other list nodes are intentionally not released. */
 }
 
-static void deallocList(PWSMemory* list)
+static void deallocList(PWSMemory* memory)
 {
-	// call free on every node
-	// mapNode(list, &deallocNode);
+	PWSLinkedList* list = (PWSLinkedList*)memory;
+
+	ListNode* node = list->head;
+	while(node != NULL) {
+		ListNode* tmp_node = node;
+		node = node->next;
+		release((PWSMemory*)tmp_node);
+	}
 }
 
 static ListNode* nodeWithData(PWSMemory *data)
@@ -61,31 +67,54 @@ int addLast(PWSLinkedList *list, PWSMemory* data)
 	node->previous = list->tail;
 	if (list->tail != NULL)
 		list->tail->next = node;
+	if (list->head == NULL)
+		list->head = node;
 	list->tail = node;
+
 	return list->count++;
 }
 
-/*void addFirst(PWSLinkedList *list, PWSMemory* data)
+void addFirst(PWSLinkedList *list, PWSMemory* data)
 {
+	ListNode* node = nodeWithData(data);
+	node->next = list->head;
+	if (node->next != NULL)
+		node->next->previous = node;
+	list->head = node;
+	if(list->tail == NULL)
+		list->tail = node;
+	list->count++;
 }
 
-int addAtIndex(PWSLinkedList *list, PWSMemory* data, int index)
+/*int addAtIndex(PWSLinkedList *list, PWSMemory* data, int index)
 {
-}
+}*/
 
 PWSMemory* getFirst(PWSLinkedList* list)
 {
+	PWSMemory* data = NULL;
+	
+	if(list->head != NULL)
+		data = list->head->data;
+
+	return data;
 }
 
-PWSLinkedList* getRest(PWSLinkedList* list)
+/*PWSLinkedList* getRest(PWSLinkedList* list)
 {
-}
+}*/
 
 PWSMemory* getLast(PWSLinkedList* list)
 {
+	PWSMemory* data = NULL;
+	
+	if(list->head != NULL)
+		data = list->tail->data;
+
+	return data;
 }
 
-PWSMemory* getByReference(PWSLinkedList* list, PWSMemory* data)
+/*PWSMemory* getByReference(PWSLinkedList* list, PWSMemory* data)
 {
 }
 
