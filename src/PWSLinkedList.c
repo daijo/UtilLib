@@ -100,9 +100,24 @@ PWSMemory* getFirst(PWSLinkedList* list)
 	return data;
 }
 
-/*PWSLinkedList* getRest(PWSLinkedList* list)
+PWSLinkedList* getRest(PWSLinkedList* list)
 {
-}*/
+	PWSLinkedList* rest = linkedList();
+
+	if(list->head != NULL) {	
+		rest->head = list->head->next;
+	}
+	rest->tail = list->tail;
+
+	ListNode* node = rest->head;
+
+	while(node != NULL) {
+		retain((PWSMemory*)node);
+		node = node->next;
+	}
+
+	return rest;
+}
 
 PWSMemory* getLast(PWSLinkedList* list)
 {

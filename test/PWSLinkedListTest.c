@@ -124,7 +124,7 @@ void TestPWSLinkedListGetLast(CuTest* tc)
 	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
-void TestPWSlinkedListMap(CuTest* tc)
+void TestPWSLinkedListMap(CuTest* tc)
 {
 	PWSLinkedList* list = linkedList();
 	PWSMemory* data;
@@ -151,7 +151,7 @@ void TestPWSlinkedListMap(CuTest* tc)
 	release((PWSMemory*)list);
 }
 
-void TestPWSlinkedListReduce(CuTest* tc)
+void TestPWSLinkedListReduce(CuTest* tc)
 {
 	PWSLinkedList* list = linkedList();
 	PWSMemory* data;
@@ -177,3 +177,32 @@ void TestPWSlinkedListReduce(CuTest* tc)
 	release(acc);
 }
 
+void PWSLinkedListGetRest(CuTest* tc)
+{
+	uint32_t initialAllocCount = totalAllocCount();
+
+	PWSLinkedList* list = linkedList();
+	PWSMemory* data;
+
+	for (int i = 0; i < 5; i++) {	
+
+		data = alloc(sizeof(int), &dummyDealloc);
+
+		*data = i;
+
+		addLast(list, data);
+	}
+
+	PWSLinkedList* rest = getRest(list);
+
+	PWSMemory* first = getFirst(rest);
+	PWSMemory* last = getLast(rest);
+
+	CuAssertTrue(tc, 1 == *first);
+	CuAssertTrue(tc, 4 == *last);
+
+	release((PWSMemory*)rest);
+	release((PWSMemory*)list); 
+
+	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
+}
