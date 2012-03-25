@@ -56,7 +56,7 @@ PWSLinkedList* linkedList()
 	return (PWSLinkedList*)alloc(sizeof(PWSLinkedList), &deallocList);
 }
 
-/*PWSLinkedList* initLinkedListFromArray(PWSArray* array, int size)
+/*PWSLinkedList* initLinkedListFromArray(PWSLinkedList* list, PWSArray* array, int size)
 {
 
 }*/
@@ -86,9 +86,11 @@ void addFirst(PWSLinkedList *list, PWSMemory* data)
 	list->count++;
 }
 
-/*int addAtIndex(PWSLinkedList *list, PWSMemory* data, int index)
+int addAtIndex(PWSLinkedList *list, PWSMemory* data, int index)
 {
-}*/
+
+	return -1;
+}
 
 PWSMemory* getFirst(PWSLinkedList* list)
 {
@@ -135,13 +137,23 @@ PWSMemory* getLast(PWSLinkedList* list)
 
 PWSMemory* getByValue(PWSLinkedList* list, PWSMemory* data)
 {
-}
+}*/
 
 PWSMemory* getByIndex(PWSLinkedList* list, int index)
 {
+	PWSMemory* data = NULL;
+
+	ListNode* node = list->head;
+
+	for (int i = 0; i <= index && node != NULL; i++) {
+		data = node->data;
+		node = node->next;
+	}	
+
+	return data;
 }
 
-PWSMemory* removeFirst(PWSLinkedList* list)
+/*PWSMemory* removeFirst(PWSLinkedList* list)
 {
 }
 
@@ -180,10 +192,6 @@ void reduce(PWSLinkedList* list, void (*reducingFunction)(PWSMemory*, PWSMemory*
 		node = node->next;
 	}	
 }
-
-/*void reverse(PWSLinkedList* list)
-{
-}i*/
 
 int count(PWSLinkedList *list)
 {
