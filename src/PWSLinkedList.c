@@ -88,8 +88,34 @@ void addFirst(PWSLinkedList *list, PWSMemory* data)
 
 int addAtIndex(PWSLinkedList *list, PWSMemory* data, int index)
 {
+	ListNode* node = list->head;
+	ListNode* newNode;
+	int acctualIndex = 0;
 
-	return -1;
+	if(0 == index) {
+		addFirst(list, data);
+	} else if (list->count <= index) {
+		addLast(list, data);
+		acctualIndex = list->count - 1;
+	} else {
+
+		for (int i = 0; i < index && node != NULL; i++) {
+			node = node->next;
+			acctualIndex = i;
+		}
+
+		newNode = nodeWithData(data);
+
+		newNode->next = node;
+		newNode->previous = node->previous;
+
+		node->previous->next = newNode;
+		node->previous = newNode;
+
+		list->count++;
+	}
+
+	return acctualIndex;
 }
 
 PWSMemory* getFirst(PWSLinkedList* list)
@@ -148,7 +174,7 @@ PWSMemory* getByIndex(PWSLinkedList* list, int index)
 	for (int i = 0; i <= index && node != NULL; i++) {
 		data = node->data;
 		node = node->next;
-	}	
+	}
 
 	return data;
 }

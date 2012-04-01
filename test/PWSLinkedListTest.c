@@ -74,6 +74,43 @@ void TestPWSLinkedListAddLast(CuTest* tc)
 	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
+void TestPWSlinkedListAddAtIndex(CuTest* tc)
+{
+	uint32_t initialAllocCount = totalAllocCount();
+
+	PWSLinkedList* list = linkedList();
+	PWSMemory* data;
+
+	for (int i = 1; i < 5; i++) {	
+
+		data = alloc(sizeof(int), &dummyDealloc);
+
+		*data = i;
+
+		addLast(list, data);
+	}
+
+	data = alloc(sizeof(int), &dummyDealloc);
+
+	*data = 42;
+
+	addAtIndex(list, data, 2);
+
+	CuAssertTrue(tc, count(list) == 5);
+
+	data = getByIndex(list, 2);
+
+	CuAssertTrue(tc, 42 == *data);
+
+	data = getByIndex(list, 3);
+
+	CuAssertTrue(tc, 3 == *data);
+
+	release((PWSMemory*)list);
+
+	CuAssertTrue(tc, initialAllocCount == totalAllocCount());	
+}
+
 void TestPWSLinkedListGetFirst(CuTest* tc)
 {
 	uint32_t initialAllocCount = totalAllocCount();
