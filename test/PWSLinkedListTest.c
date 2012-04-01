@@ -22,6 +22,17 @@ void addIntFunction(PWSMemory* acc, PWSMemory* data)
 	*acc= *acc + *data;
 }
 
+int comparePointer(void* pt1, void* pt2)
+{
+	int result = -1;
+	if (pt1 > pt2) {
+		result = 1;
+	} else if (pt1 == pt2) {
+		result = 0;
+	}
+	return result;
+}
+
 void TestPWSLinkedListCreate(CuTest* tc)
 {
 	uint32_t initialAllocCount = totalAllocCount();
@@ -155,6 +166,31 @@ void TestPWSLinkedListGetLast(CuTest* tc)
 	data = getLast(list);
 
 	CuAssertTrue(tc, 1 == *data);
+
+	release((PWSMemory*)list);
+
+	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
+}
+
+void TestPWSLinkedListGetEqual(CuTest* tc)
+{
+	uint32_t initialAllocCount = totalAllocCount();
+
+	PWSLinkedList* list = linkedList();
+	PWSMemory* data;
+
+	for (int i = 1; i < 5; i++) {	
+
+		data = alloc(sizeof(int), &dummyDealloc);
+
+		*data = i;
+
+		addLast(list, data);
+	}
+
+	data = getEqual(list, data, &comparePointer);
+
+	CuAssertTrue(tc, 4 == *data);
 
 	release((PWSMemory*)list);
 

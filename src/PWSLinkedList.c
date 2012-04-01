@@ -157,13 +157,21 @@ PWSMemory* getLast(PWSLinkedList* list)
 	return data;
 }
 
-/*PWSMemory* getByReference(PWSLinkedList* list, PWSMemory* data)
+PWSMemory* getEqual(PWSLinkedList* list, PWSMemory* data, int (*compareFunction)(void*, void*))
 {
-}
+	PWSMemory* result = NULL;
 
-PWSMemory* getByValue(PWSLinkedList* list, PWSMemory* data)
-{
-}*/
+	ListNode* node = list->head;
+
+	while(node != NULL && result == NULL) {
+		node = node->next;
+		if(compareFunction(data, node->data) == 0) {
+			result = node->data;
+		}
+	}
+	
+	return result;
+}
 
 PWSMemory* getByIndex(PWSLinkedList* list, int index)
 {

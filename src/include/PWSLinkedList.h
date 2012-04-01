@@ -23,19 +23,16 @@ void addFirst(PWSLinkedList *list, PWSMemory* data);
 int addAtIndex(PWSLinkedList *list, PWSMemory* data, int index);
 
 PWSMemory* getFirst(PWSLinkedList* list);
-/* The elements isn't copied but they are retained again so all list can be safely released. */
+/* The elements isn't copied but they are retained again so all lists can be safely released. */
 PWSLinkedList* getRest(PWSLinkedList* list);
-
 PWSMemory* getLast(PWSLinkedList* list);
-PWSMemory* getByReference(PWSLinkedList* list, PWSMemory* data);
-PWSMemory* getByValue(PWSLinkedList* list, PWSMemory* data, int (*compareFunction)(void*, void*));
+PWSMemory* getEqual(PWSLinkedList* list, PWSMemory* data, int (*compareFunction)(void*, void*));
 PWSMemory* getByIndex(PWSLinkedList* list, int index);
 
-/* Remove elements, will me autoreleased by the list. */
+/* Remove elements, will be autoreleased by the list. */
 PWSMemory* removeFirst(PWSLinkedList* list);
 PWSMemory* removeLast(PWSLinkedList* list);
-PWSMemory* removeByReference(PWSLinkedList* list, PWSMemory* data);
-PWSMemory* removeByValue(PWSLinkedList* list, PWSMemory* data, int (*compareFunction)(void*, void*));
+PWSMemory* removeEqual(PWSLinkedList* list, PWSMemory* data, int (*compareFunction)(void*, void*));
 PWSMemory* removeByIndex(PWSLinkedList* list, int index);
 
 /* Applies the mapping function on all the elements. The mapping function modify it's input data. */

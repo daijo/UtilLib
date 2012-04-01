@@ -10,7 +10,7 @@
 
 static int testData = 0xDEADBEEF;
 
-int comparePointer(void* pt1, void* pt2)
+/*int comparePointer(void* pt1, void* pt2)
 {
 	int result = -1;
 	if (pt1 > pt2) {
@@ -19,7 +19,7 @@ int comparePointer(void* pt1, void* pt2)
 		result = 0;
 	}
 	return result;
-}
+}*/
 
 void TestPWSDataInitAndFree(CuTest* tc)
 {
