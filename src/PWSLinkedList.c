@@ -164,10 +164,11 @@ PWSMemory* getEqual(PWSLinkedList* list, PWSMemory* data, int (*compareFunction)
 	ListNode* node = list->head;
 
 	while(node != NULL && result == NULL) {
-		node = node->next;
+
 		if(compareFunction(data, node->data) == 0) {
 			result = node->data;
 		}
+		node = node->next;
 	}
 	
 	return result;
