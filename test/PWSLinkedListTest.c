@@ -222,6 +222,36 @@ void TestPWSLinkedListGetByIndex(CuTest* tc)
 	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
+void TestPWSLinkedListRemoveFirst(CuTest* tc)
+{
+	uint32_t initialAllocCount = totalAllocCount();
+
+	PWSLinkedList* list = linkedList();
+	PWSMemory* data;
+
+	for (int i = 0; i < 5; i++) {	
+
+		data = alloc(sizeof(int), &dummyDealloc);
+
+		*data = i;
+
+		addLast(list, data);
+	}
+
+	for (int i = 0; i < 5; i++) {	
+
+		data = removeFirst(list);
+
+		CuAssertTrue(tc, *data == i);
+
+		//CuAssertTrue(tc, count(list) == 5 - i);
+	}
+
+	release((PWSMemory*)list);
+
+	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
+}
+
 void TestPWSLinkedListMap(CuTest* tc)
 {
 	PWSLinkedList* list = linkedList();

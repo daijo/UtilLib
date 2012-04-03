@@ -188,11 +188,21 @@ PWSMemory* getByIndex(PWSLinkedList* list, int index)
 	return data;
 }
 
-/*PWSMemory* removeFirst(PWSLinkedList* list)
+PWSMemory* removeFirst(PWSLinkedList* list)
 {
+	PWSMemory* data = NULL;
+
+	if(list->head != NULL) {
+		ListNode* tmp_node = list->head;
+		data = list->head->data;
+		list->head = list->head->next;
+		release((PWSMemory*)tmp_node);
+	}
+
+	return data;
 }
 
-PWSMemory* removeLast(PWSLinkedList* list)
+/*PWSMemory* removeLast(PWSLinkedList* list)
 {
 }
 
