@@ -238,16 +238,19 @@ void TestPWSLinkedListRemoveFirst(CuTest* tc)
 		addLast(list, data);
 	}
 
+	CuAssertTrue(tc, count(list) == 5);
+
 	for (int i = 0; i < 5; i++) {	
+
+		CuAssertTrue(tc, count(list) == 5 - i);
 
 		data = removeFirst(list);
 
 		CuAssertTrue(tc, *data == i);
-
-		//CuAssertTrue(tc, count(list) == 5 - i);
 	}
 
 	release((PWSMemory*)list);
+	emptyAutoReleasePool();
 
 	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }

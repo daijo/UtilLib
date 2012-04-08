@@ -196,7 +196,8 @@ PWSMemory* removeFirst(PWSLinkedList* list)
 		ListNode* tmp_node = list->head;
 		data = list->head->data;
 		list->head = list->head->next;
-		release((PWSMemory*)tmp_node);
+		autorelease((PWSMemory*)tmp_node);
+		list->count--;
 	}
 
 	return data;
