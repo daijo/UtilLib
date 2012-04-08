@@ -23,13 +23,14 @@ void addFirst(PWSLinkedList *list, PWSMemory* data);
 int addAtIndex(PWSLinkedList *list, PWSMemory* data, int index);
 
 PWSMemory* getFirst(PWSLinkedList* list);
-/* The elements isn't copied but they are retained again so all lists can be safely released. */
-PWSLinkedList* getRest(PWSLinkedList* list);
 PWSMemory* getLast(PWSLinkedList* list);
 PWSMemory* getEqual(PWSLinkedList* list, PWSMemory* data, int (*compareFunction)(void*, void*));
 PWSMemory* getByIndex(PWSLinkedList* list, int index);
+/* The elements isn't copied but they are retained again so all lists can be safely released. */
+PWSLinkedList* getRest(PWSLinkedList* list);
 
-/* Remove elements, will be autoreleased by the list. */
+/* Remove elements, will be autoreleased by the list (you need to retain the data you want to keep 
+ * and empty the pool at some point). */
 PWSMemory* removeFirst(PWSLinkedList* list);
 PWSMemory* removeLast(PWSLinkedList* list);
 PWSMemory* removeEqual(PWSLinkedList* list, PWSMemory* data, int (*compareFunction)(void*, void*));
