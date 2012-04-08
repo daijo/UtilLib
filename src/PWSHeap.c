@@ -17,9 +17,8 @@ typedef struct __PWSMemoryHeader PWSMemoryHeader;
 
 struct PWSHeap
 {
-	PWSMemoryHeader** autoReleasePool; 
-	uint32_t freePoolIndex;
-	uint32_t autoReleasePoolSize;
+	PWSMemoryHeader* autoReleasePool; 
+	uint32_t poolCount;
 };
 
 struct __PWSMemoryHeader
@@ -30,6 +29,7 @@ struct __PWSMemoryHeader
 	uint32_t *firstMemoryGuard;
 	PWSMemory *memory;
 	uint32_t *secondMemoryGuard;
+	PWSMemoryHeader *nextInAutoReleasePool;
 };
 
 static void callDeallocAndFreeIfRetainCountIsZero(PWSMemoryHeader *header);
@@ -105,7 +105,6 @@ void release(PWSMemory *memory)
 PWSMemory* autorelease(PWSMemory *memory)
 {
 	assert(memoryGuardsUntouched(memory));
-	assert(spaceLeftInPool());
 
 	if(memory != NULL) {
 
@@ -147,43 +146,25 @@ bool memoryGuardsUntouched(PWSMemory *memory)
 	return result;
 }
 
-bool setupAutoReleasePool(uint32_t autoReleasePoolSize)
-{
-	theHeap.autoReleasePool = (PWSMemoryHeader**)calloc(sizeof(PWSMemoryHeader*), autoReleasePoolSize);
-	theHeap.freePoolIndex = 0;
-	theHeap.autoReleasePoolSize = autoReleasePoolSize;
-	return theHeap.autoReleasePool != NULL;
-}
-
-void teardownAutoReleasePool()
-{
-	emptyAutoReleasePool();
-	free(theHeap.autoReleasePool);
-	theHeap.autoReleasePool = 0;
-	theHeap.autoReleasePoolSize = 0;
-}
-
 void emptyAutoReleasePool()
 {
-	PWSMemoryHeader* header;
+	PWSMemoryHeader* header = theHeap.autoReleasePool;
+	theHeap.autoReleasePool = NULL;
 
-	for (int i = theHeap.freePoolIndex; i > 0 && i <= theHeap.freePoolIndex; i--) {
+	while (header != NULL) {
 
-		header = theHeap.autoReleasePool[--theHeap.freePoolIndex];
-		callDeallocAndFreeIfRetainCountIsZero(header);	
+		PWSMemoryHeader* next = header->nextInAutoReleasePool;
+		callDeallocAndFreeIfRetainCountIsZero(header);
+		header = next;
+		theHeap.poolCount--;
 	}
 
-	assert((theHeap.freePoolIndex == 0));
+	assert((theHeap.poolCount == 0));
 }
 
 uint32_t autoReleasePoolCount()
 {
-	return theHeap.freePoolIndex;
-}
-
-bool spaceLeftInPool()
-{
-	return theHeap.freePoolIndex < theHeap.autoReleasePoolSize;
+	return theHeap.poolCount;
 }
 
 /* Private methods implementations. */
@@ -199,8 +180,9 @@ static void callDeallocAndFreeIfRetainCountIsZero(PWSMemoryHeader *header)
 
 static void addToPool(PWSMemoryHeader *header)
 {
-	theHeap.autoReleasePool[theHeap.freePoolIndex] = header;
-	theHeap.freePoolIndex++;
+	header->nextInAutoReleasePool = theHeap.autoReleasePool;
+	theHeap.autoReleasePool = header;
+	theHeap.poolCount++;
 }
 
 static PWSMemoryHeader* headerFromMemory(PWSMemory *memory)

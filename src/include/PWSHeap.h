@@ -33,18 +33,10 @@ uint32_t retainCount(PWSMemory *memory);
 /* Returns true if the memory guards haven't been overrun. */
 bool memoryGuardsUntouched(PWSMemory *memory);
 
-/* Allocates a autoReleasePool with given size. */
-bool setupAutoReleasePool(uint32_t autoReleasePoolSize);
-
-/* Deallocates the autoReleasePool. */
-void teardownAutoReleasePool();
-
 /* Empties the pool. All memories with retain count 0 is freed after their deallocFunction is called. Call at end of each runloop. */
 void emptyAutoReleasePool();
 
 uint32_t autoReleasePoolCount();
-
-bool spaceLeftInPool();
 
 uint32_t totalAllocCount();
 
