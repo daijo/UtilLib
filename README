@@ -1,7 +1,7 @@
-Algorithms And Data Structures
-==============================
+MotokoLib
+=========
 
-Some labbing with algorithms and data structure implementation in C.
+A library of algorithms and data structures implemented in C.
 
 To build:
 
@@ -30,30 +30,5 @@ To clean:
 Content
 -------
 
-PWSHeap - A small memory handling utility with reference counting, autorelease and buffer overrun checks.
-
-Todo
-----
-
-Data:
-
-PWSList
-PWSSkipList
-PWSTree
-PWSHashMap (Red–black tree?)
-PWSGraph
-
-Algorithms:
-
-MergeSort
-QuickSort
-HeapSort
-Dijkstra
-Floyd–Warshall
-Search tree
-A*
-Alfa-Beta
-Brzozowski's
-Viterbia
-Simplex
-Floyd's cycle-finding
+MotokoHeap - A small memory handling utility with reference counting, autorelease and buffer overrun checks.
+MotokoLinkedList - A linked list implementation.

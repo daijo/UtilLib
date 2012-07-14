@@ -1,5 +1,5 @@
-/* 0x50 0x57 0x53 
- * Copyright 2012 Patchwork Solutions AB. All rights reserved.
+/*  
+ * Copyright 2012 Daniel Hjort. All rights reserved.
  * Author: Daniel Hjort
  */
 
@@ -7,24 +7,24 @@
 #include <string.h>
 #include <assert.h>
 
-#include "PWSLinkedList.h"
-#include "PWSHeap.h"
+#include "MotokoLinkedList.h"
+#include "MotokoHeap.h"
 
 typedef struct __ListNode ListNode;
 struct __ListNode {
-	PWSMemory *data;
+	MotokoMemory *data;
 	ListNode *previous;
 	ListNode *next;
 };
 
-struct __PWSLinkedList {
+struct __MotokoLinkedList {
 	ListNode *head;
         ListNode *tail;
         int count;
 	bool reversed;
 };
 
-static void deallocNode(PWSMemory* memory)
+static void deallocNode(MotokoMemory* memory)
 {
 	ListNode* node = (ListNode*)memory;
 
@@ -32,36 +32,36 @@ static void deallocNode(PWSMemory* memory)
 	/* Other list nodes are intentionally not released. */
 }
 
-static void deallocList(PWSMemory* memory)
+static void deallocList(MotokoMemory* memory)
 {
-	PWSLinkedList* list = (PWSLinkedList*)memory;
+	MotokoLinkedList* list = (MotokoLinkedList*)memory;
 
 	ListNode* node = list->head;
 	while(node != NULL) {
 		ListNode* tmp_node = node;
 		node = node->next;
-		release((PWSMemory*)tmp_node);
+		release((MotokoMemory*)tmp_node);
 	}
 }
 
-static ListNode* nodeWithData(PWSMemory *data)
+static ListNode* nodeWithData(MotokoMemory *data)
 {
 	ListNode* node = (ListNode*)alloc(sizeof(ListNode), &deallocNode);
 	node->data = data;
 	return node;
 }
 
-PWSLinkedList* linkedList()
+MotokoLinkedList* linkedList()
 {
-	return (PWSLinkedList*)alloc(sizeof(PWSLinkedList), &deallocList);
+	return (MotokoLinkedList*)alloc(sizeof(MotokoLinkedList), &deallocList);
 }
 
-/*PWSLinkedList* initLinkedListFromArray(PWSLinkedList* list, PWSArray* array, int size)
+/*MotokoLinkedList* initLinkedListFromArray(MotokoLinkedList* list, MotokoArray* array, int size)
 {
 
 }*/
 
-int addLast(PWSLinkedList *list, PWSMemory* data)
+int addLast(MotokoLinkedList *list, MotokoMemory* data)
 {
 	ListNode* node = nodeWithData(data);
 	node->previous = list->tail;
@@ -74,7 +74,7 @@ int addLast(PWSLinkedList *list, PWSMemory* data)
 	return list->count++;
 }
 
-void addFirst(PWSLinkedList *list, PWSMemory* data)
+void addFirst(MotokoLinkedList *list, MotokoMemory* data)
 {
 	ListNode* node = nodeWithData(data);
 	node->next = list->head;
@@ -86,7 +86,7 @@ void addFirst(PWSLinkedList *list, PWSMemory* data)
 	list->count++;
 }
 
-int addAtIndex(PWSLinkedList *list, PWSMemory* data, int index)
+int addAtIndex(MotokoLinkedList *list, MotokoMemory* data, int index)
 {
 	ListNode* node = list->head;
 	ListNode* newNode;
@@ -118,9 +118,9 @@ int addAtIndex(PWSLinkedList *list, PWSMemory* data, int index)
 	return acctualIndex;
 }
 
-PWSMemory* getFirst(PWSLinkedList* list)
+MotokoMemory* getFirst(MotokoLinkedList* list)
 {
-	PWSMemory* data = NULL;
+	MotokoMemory* data = NULL;
 	
 	if(list->head != NULL)
 		data = list->head->data;
@@ -128,9 +128,9 @@ PWSMemory* getFirst(PWSLinkedList* list)
 	return data;
 }
 
-PWSLinkedList* getRest(PWSLinkedList* list)
+MotokoLinkedList* getRest(MotokoLinkedList* list)
 {
-	PWSLinkedList* rest = linkedList();
+	MotokoLinkedList* rest = linkedList();
 
 	if(list->head != NULL) {	
 		rest->head = list->head->next;
@@ -140,16 +140,16 @@ PWSLinkedList* getRest(PWSLinkedList* list)
 	ListNode* node = rest->head;
 
 	while(node != NULL) {
-		retain((PWSMemory*)node);
+		retain((MotokoMemory*)node);
 		node = node->next;
 	}
 
 	return rest;
 }
 
-PWSMemory* getLast(PWSLinkedList* list)
+MotokoMemory* getLast(MotokoLinkedList* list)
 {
-	PWSMemory* data = NULL;
+	MotokoMemory* data = NULL;
 	
 	if(list->head != NULL)
 		data = list->tail->data;
@@ -157,9 +157,9 @@ PWSMemory* getLast(PWSLinkedList* list)
 	return data;
 }
 
-PWSMemory* getEqual(PWSLinkedList* list, PWSMemory* data, int (*compareFunction)(void*, void*))
+MotokoMemory* getEqual(MotokoLinkedList* list, MotokoMemory* data, int (*compareFunction)(void*, void*))
 {
-	PWSMemory* result = NULL;
+	MotokoMemory* result = NULL;
 
 	ListNode* node = list->head;
 
@@ -174,9 +174,9 @@ PWSMemory* getEqual(PWSLinkedList* list, PWSMemory* data, int (*compareFunction)
 	return result;
 }
 
-PWSMemory* getByIndex(PWSLinkedList* list, int index)
+MotokoMemory* getByIndex(MotokoLinkedList* list, int index)
 {
-	PWSMemory* data = NULL;
+	MotokoMemory* data = NULL;
 
 	ListNode* node = list->head;
 
@@ -188,38 +188,38 @@ PWSMemory* getByIndex(PWSLinkedList* list, int index)
 	return data;
 }
 
-PWSMemory* removeFirst(PWSLinkedList* list)
+MotokoMemory* removeFirst(MotokoLinkedList* list)
 {
-	PWSMemory* data = NULL;
+	MotokoMemory* data = NULL;
 
 	if(list->head != NULL) {
 		ListNode* nodeToRemove = list->head;
 		data = list->head->data;
 		list->head = list->head->next;
-		autorelease((PWSMemory*)nodeToRemove);
+		autorelease((MotokoMemory*)nodeToRemove);
 		list->count--;
 	}
 
 	return data;
 }
 
-/*PWSMemory* removeLast(PWSLinkedList* list)
+/*MotokoMemory* removeLast(MotokoLinkedList* list)
 {
 }
 
-PWSMemory* removeByReference(PWSLinkedList* list, PWSMemory* data)
+MotokoMemory* removeByReference(MotokoLinkedList* list, MotokoMemory* data)
 {
 }
 
-PWSMemory* removeByValue(PWSLinkedList* list, PWSMemory* data)
+MotokoMemory* removeByValue(MotokoLinkedList* list, MotokoMemory* data)
 {
 }
 
-PWSMemory* removeByIndex(PWSLinkedList* list, int index)
+MotokoMemory* removeByIndex(MotokoLinkedList* list, int index)
 {
 }*/
 
-void map(PWSLinkedList* list, void (*mappingFunction)(PWSMemory*))
+void map(MotokoLinkedList* list, void (*mappingFunction)(MotokoMemory*))
 {
 	ListNode* node = list->head;
 
@@ -229,7 +229,7 @@ void map(PWSLinkedList* list, void (*mappingFunction)(PWSMemory*))
 	}
 }
 
-void reduce(PWSLinkedList* list, void (*reducingFunction)(PWSMemory*, PWSMemory*), PWSMemory* acc)
+void reduce(MotokoLinkedList* list, void (*reducingFunction)(MotokoMemory*, MotokoMemory*), MotokoMemory* acc)
 {
 	ListNode* node = list->head;
 
@@ -239,12 +239,12 @@ void reduce(PWSLinkedList* list, void (*reducingFunction)(PWSMemory*, PWSMemory*
 	}	
 }
 
-int count(PWSLinkedList *list)
+int count(MotokoLinkedList *list)
 {
 	return list->count;
 }
 
-bool isEmpty(PWSLinkedList *list)
+bool isEmpty(MotokoLinkedList *list)
 {
 	return list->count == 0;
 }

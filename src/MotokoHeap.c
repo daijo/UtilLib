@@ -1,5 +1,5 @@
-/* 0x50 0x57 0x53 
- * Copyright 2012 Patchwork Solutions AB. All rights reserved.
+/*  
+ * Copyright 2012 Daniel Hjort. All rights reserved.
  * Author: Daniel Hjort
  */
 
@@ -7,54 +7,54 @@
 #include <string.h>
 #include <assert.h>
 
-#include "PWSHeap.h"
+#include "MotokoHeap.h"
 
 #define MEMORY_GUARD 0xDEADBEAF
 
 /* Private definitions. */
 
-typedef struct __PWSMemoryHeader PWSMemoryHeader;
+typedef struct __MotokoMemoryHeader MotokoMemoryHeader;
 
-struct PWSHeap
+struct MotokoHeap
 {
-	PWSMemoryHeader* autoReleasePool; 
+	MotokoMemoryHeader* autoReleasePool; 
 	uint32_t poolCount;
 };
 
-struct __PWSMemoryHeader
+struct __MotokoMemoryHeader
 {
 	uint32_t retainCount;
-	void (*deallocFunction)(PWSMemory*);
+	void (*deallocFunction)(MotokoMemory*);
 	size_t size;
 	uint32_t *firstMemoryGuard;
-	PWSMemory *memory;
+	MotokoMemory *memory;
 	uint32_t *secondMemoryGuard;
-	PWSMemoryHeader *nextInAutoReleasePool;
+	MotokoMemoryHeader *nextInAutoReleasePool;
 };
 
-static void callDeallocAndFreeIfRetainCountIsZero(PWSMemoryHeader *header);
-static void addToPool(PWSMemoryHeader *header);
-static PWSMemoryHeader* headerFromMemory(PWSMemory *memory);
+static void callDeallocAndFreeIfRetainCountIsZero(MotokoMemoryHeader *header);
+static void addToPool(MotokoMemoryHeader *header);
+static MotokoMemoryHeader* headerFromMemory(MotokoMemory *memory);
 
-static struct PWSHeap theHeap;
+static struct MotokoHeap theHeap;
 static uint32_t totalAllocCounter = 0;
 
 /* Public method implementations. */
 
-PWSMemory* alloc(size_t size, void (*deallocFunction)(PWSMemory*))
+MotokoMemory* alloc(size_t size, void (*deallocFunction)(MotokoMemory*))
 {
-	PWSMemoryHeader *header;
-	PWSMemory *ptr;
+	MotokoMemoryHeader *header;
+	MotokoMemory *ptr;
 
 	/* Get the memory. */
-	header = (PWSMemoryHeader*)calloc(sizeof(PWSMemoryHeader) + size + 2 * sizeof(uint32_t), 1);
+	header = (MotokoMemoryHeader*)calloc(sizeof(MotokoMemoryHeader) + size + 2 * sizeof(uint32_t), 1);
 	header->retainCount = 1;
 	header->deallocFunction = deallocFunction;
 	header->size = size;
-	ptr = (PWSMemory*)header;
+	ptr = (MotokoMemory*)header;
 
 	/* Get first memory guard pointer. */
-	ptr += sizeof(PWSMemoryHeader);
+	ptr += sizeof(MotokoMemoryHeader);
 	header->firstMemoryGuard = (uint32_t*)ptr;
 	*(header->firstMemoryGuard) = MEMORY_GUARD;
 
@@ -74,13 +74,13 @@ PWSMemory* alloc(size_t size, void (*deallocFunction)(PWSMemory*))
 	return header->memory;
 }
 
-PWSMemory* retain(PWSMemory *memory)
+MotokoMemory* retain(MotokoMemory *memory)
 {
 	assert(memoryGuardsUntouched(memory));
 
 	if(memory != NULL) {
 
-		PWSMemoryHeader *header = headerFromMemory(memory);
+		MotokoMemoryHeader *header = headerFromMemory(memory);
 
 		header->retainCount++;
 	}
@@ -88,13 +88,13 @@ PWSMemory* retain(PWSMemory *memory)
 	return memory;
 }
 
-void release(PWSMemory *memory)
+void release(MotokoMemory *memory)
 {
 	assert(memoryGuardsUntouched(memory));
 
 	if(memory != NULL) {
 
-		PWSMemoryHeader *header = headerFromMemory(memory);
+		MotokoMemoryHeader *header = headerFromMemory(memory);
 
 		header->retainCount--;
 
@@ -102,13 +102,13 @@ void release(PWSMemory *memory)
 	}
 }
 
-PWSMemory* autorelease(PWSMemory *memory)
+MotokoMemory* autorelease(MotokoMemory *memory)
 {
 	assert(memoryGuardsUntouched(memory));
 
 	if(memory != NULL) {
 
-		PWSMemoryHeader *header = headerFromMemory(memory);
+		MotokoMemoryHeader *header = headerFromMemory(memory);
 
 		header->retainCount--;
 		if(header->retainCount == 0)
@@ -118,7 +118,7 @@ PWSMemory* autorelease(PWSMemory *memory)
 	return memory;
 }
 
-uint32_t retainCount(PWSMemory *memory)
+uint32_t retainCount(MotokoMemory *memory)
 {
 	assert(memoryGuardsUntouched(memory));
 
@@ -126,20 +126,20 @@ uint32_t retainCount(PWSMemory *memory)
 
 	if(memory != NULL) {
 
-		PWSMemoryHeader *header = headerFromMemory(memory);
+		MotokoMemoryHeader *header = headerFromMemory(memory);
 		result = header->retainCount;
 	}
 
 	return result;
 }
 
-bool memoryGuardsUntouched(PWSMemory *memory)
+bool memoryGuardsUntouched(MotokoMemory *memory)
 {
 	bool result = true;
 
 	if(memory != NULL) {
 
-		PWSMemoryHeader *header = headerFromMemory(memory);
+		MotokoMemoryHeader *header = headerFromMemory(memory);
 		result = *(header->firstMemoryGuard) == MEMORY_GUARD && *(header->secondMemoryGuard) == MEMORY_GUARD;
 	}
 
@@ -148,12 +148,12 @@ bool memoryGuardsUntouched(PWSMemory *memory)
 
 void emptyAutoReleasePool()
 {
-	PWSMemoryHeader* header = theHeap.autoReleasePool;
+	MotokoMemoryHeader* header = theHeap.autoReleasePool;
 	theHeap.autoReleasePool = NULL;
 
 	while (header != NULL) {
 
-		PWSMemoryHeader* next = header->nextInAutoReleasePool;
+		MotokoMemoryHeader* next = header->nextInAutoReleasePool;
 		callDeallocAndFreeIfRetainCountIsZero(header);
 		header = next;
 		theHeap.poolCount--;
@@ -169,7 +169,7 @@ uint32_t autoReleasePoolCount()
 
 /* Private methods implementations. */
 
-static void callDeallocAndFreeIfRetainCountIsZero(PWSMemoryHeader *header)
+static void callDeallocAndFreeIfRetainCountIsZero(MotokoMemoryHeader *header)
 {
 	if (header->retainCount == 0) {
 		header->deallocFunction(header->memory);
@@ -178,16 +178,16 @@ static void callDeallocAndFreeIfRetainCountIsZero(PWSMemoryHeader *header)
 	}
 }
 
-static void addToPool(PWSMemoryHeader *header)
+static void addToPool(MotokoMemoryHeader *header)
 {
 	header->nextInAutoReleasePool = theHeap.autoReleasePool;
 	theHeap.autoReleasePool = header;
 	theHeap.poolCount++;
 }
 
-static PWSMemoryHeader* headerFromMemory(PWSMemory *memory)
+static MotokoMemoryHeader* headerFromMemory(MotokoMemory *memory)
 {
-	return (PWSMemoryHeader*)(memory - (sizeof(PWSMemoryHeader) + sizeof(uint32_t)));
+	return (MotokoMemoryHeader*)(memory - (sizeof(MotokoMemoryHeader) + sizeof(uint32_t)));
 }
 
 uint32_t totalAllocCount()

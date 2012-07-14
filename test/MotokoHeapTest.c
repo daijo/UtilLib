@@ -1,21 +1,21 @@
-/* 0x50 0x57 0x53 
- * Copyright 2012 Patchwork Solutions AB. All rights reserved.
+/*  
+ * Copyright 2012 Daniel Hjort. All rights reserved.
  * Author: Daniel Hjort
  */
 
 #include <limits.h>
 
-#include "PWSHeap.h"
+#include "MotokoHeap.h"
 #include "CuTest.h"
 
 static int deallocCount;
 
-void test_dealloc(PWSMemory* memory)
+void test_dealloc(MotokoMemory* memory)
 {
 	deallocCount++;
 }
 
-void TestPWSHeapAllocAndRelease(CuTest* tc)
+void TestMotokoHeapAllocAndRelease(CuTest* tc)
 {
 
 	int *memory;
@@ -29,10 +29,10 @@ void TestPWSHeapAllocAndRelease(CuTest* tc)
 		*memory = INT_MAX;
 
 		CuAssertTrue(tc, memory != NULL);
-		CuAssertTrue(tc, retainCount((PWSMemory*)memory) == 1);
-		CuAssertTrue(tc, memoryGuardsUntouched((PWSMemory*)memory));
+		CuAssertTrue(tc, retainCount((MotokoMemory*)memory) == 1);
+		CuAssertTrue(tc, memoryGuardsUntouched((MotokoMemory*)memory));
 
-		release((PWSMemory*)memory);
+		release((MotokoMemory*)memory);
 	}
 
 	CuAssertTrue(tc, deallocCount == 5);
@@ -40,7 +40,7 @@ void TestPWSHeapAllocAndRelease(CuTest* tc)
 }
 
 
-void TestPWSHeapAllocRetainAndRelease(CuTest* tc)
+void TestMotokoHeapAllocRetainAndRelease(CuTest* tc)
 {
 
 	uint32_t initialAllocCount = totalAllocCount();
@@ -54,25 +54,25 @@ void TestPWSHeapAllocRetainAndRelease(CuTest* tc)
 	for (int i = 0; i < 5; i++) {
 
 		CuAssertTrue(tc, *memory == INT_MAX);
-		CuAssertTrue(tc, retainCount((PWSMemory*)memory) == 1);
-		CuAssertTrue(tc, memoryGuardsUntouched((PWSMemory*)memory));
+		CuAssertTrue(tc, retainCount((MotokoMemory*)memory) == 1);
+		CuAssertTrue(tc, memoryGuardsUntouched((MotokoMemory*)memory));
 
-		retain((PWSMemory*)memory);
+		retain((MotokoMemory*)memory);
 
 		CuAssertTrue(tc, *memory == INT_MAX);
-		CuAssertTrue(tc, retainCount((PWSMemory*)memory) == 2);
-		CuAssertTrue(tc, memoryGuardsUntouched((PWSMemory*)memory));
+		CuAssertTrue(tc, retainCount((MotokoMemory*)memory) == 2);
+		CuAssertTrue(tc, memoryGuardsUntouched((MotokoMemory*)memory));
 
-		release((PWSMemory*)memory);
+		release((MotokoMemory*)memory);
 	}
 
-	release((PWSMemory*)memory);
+	release((MotokoMemory*)memory);
 
 	CuAssertTrue(tc, deallocCount == 1);
 	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
-void TestPWSHeapAllocAndAutoRelease(CuTest* tc)
+void TestMotokoHeapAllocAndAutoRelease(CuTest* tc)
 {
 	int *memories[5];
 	deallocCount = 0;
@@ -83,8 +83,8 @@ void TestPWSHeapAllocAndAutoRelease(CuTest* tc)
 		memories[i] = (int*)alloc(sizeof(int), &test_dealloc);
 		*memories[i]  = i;
 
-		CuAssertTrue(tc, retainCount((PWSMemory*)memories[i]) == 1);
-		CuAssertTrue(tc, memoryGuardsUntouched((PWSMemory*)memories[i]));
+		CuAssertTrue(tc, retainCount((MotokoMemory*)memories[i]) == 1);
+		CuAssertTrue(tc, memoryGuardsUntouched((MotokoMemory*)memories[i]));
 	}
 
 	CuAssertTrue(tc, autoReleasePoolCount() == 0);
@@ -93,7 +93,7 @@ void TestPWSHeapAllocAndAutoRelease(CuTest* tc)
 
 		CuAssertTrue(tc, autoReleasePoolCount() == i);
 
-		autorelease((PWSMemory*)memories[i]);
+		autorelease((MotokoMemory*)memories[i]);
 	}
 
 	CuAssertTrue(tc, deallocCount == 0);

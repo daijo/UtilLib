@@ -19,12 +19,12 @@ endif
 
 # Files
 
-LIB = libAlgData.a
+LIB = libMotoko.a
 
-_DEPS = PWSHeap.h PWSData.h PWSLinkedList.h PWSHashFunctions.h
+_DEPS = MotokoHeap.h MotokoLinkedList.h MotokoHashFunctions.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = PWSHeap.o PWSData.o PWSLinkedList.o PWSHashFunctions.o
+_OBJ = MotokoHeap.o MotokoLinkedList.o MotokoHashFunctions.o
 ifdef CROSS_COMPILE
 	ODIR = $(OUTDIR)/$(CROSS_COMPILE)obj
 	OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
@@ -33,7 +33,7 @@ else
 	TESTOBJ = $(patsubst %,$(TESTODIR)/%,$(_OBJ))
 endif
 
-_TESTS = PWSHeapTest.o PWSDataTest.o PWSLinkedListTest.o CuTest.o AllTests.o
+_TESTS = MotokoHeapTest.o MotokoLinkedListTest.o CuTest.o AllTests.o
 TESTS = $(patsubst %,$(TESTODIR)/%,$(_TESTS))
 
 # Make stuff

@@ -1,5 +1,5 @@
-/* 0x50 0x57 0x53 
- * Copyright 2012 Patchwork Solutions AB. All rights reserved.
+/*  
+ * Copyright 2012 Daniel Hjort. All rights reserved.
  * Author: Daniel Hjort
  */
 

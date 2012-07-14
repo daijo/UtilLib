@@ -1,23 +1,23 @@
-/* 0x50 0x57 0x53 
- * Copyright 2012 Patchwork Solutions AB. All rights reserved.
+/*  
+ * Copyright 2012 Daniel Hjort. All rights reserved.
  * Author: Daniel Hjort
  */
 
 #include <stdlib.h>
 
-#include "PWSLinkedList.h"
+#include "MotokoLinkedList.h"
 #include "CuTest.h"
 
-void dummyDealloc(PWSMemory* memory)
+void dummyDealloc(MotokoMemory* memory)
 {
 }
 
-void doubleIntFunction(PWSMemory* data)
+void doubleIntFunction(MotokoMemory* data)
 {
 	*data= *data * 2;
 }
 
-void addIntFunction(PWSMemory* acc, PWSMemory* data)
+void addIntFunction(MotokoMemory* acc, MotokoMemory* data)
 {
 	*acc= *acc + *data;
 }
@@ -33,25 +33,25 @@ int comparePointer(void* pt1, void* pt2)
 	return result;
 }
 
-void TestPWSLinkedListCreate(CuTest* tc)
+void TestMotokoLinkedListCreate(CuTest* tc)
 {
 	uint32_t initialAllocCount = totalAllocCount();
 
-	PWSLinkedList* list = linkedList();
+	MotokoLinkedList* list = linkedList();
 	
 	CuAssertTrue(tc, isEmpty(list));
 	CuAssertTrue(tc, count(list) == 0);
 
-	release((PWSMemory*)list);
+	release((MotokoMemory*)list);
 
 	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
-void TestPWSLinkedListAddFirst(CuTest* tc)
+void TestMotokoLinkedListAddFirst(CuTest* tc)
 {
 	uint32_t initialAllocCount = totalAllocCount();
 
-	PWSLinkedList* list = linkedList();
+	MotokoLinkedList* list = linkedList();
 
 	for (int i = 1; i < 5; i++) {	
 
@@ -61,16 +61,16 @@ void TestPWSLinkedListAddFirst(CuTest* tc)
 		CuAssertTrue(tc, count(list) == i);
 	}
 
-	release((PWSMemory*)list);
+	release((MotokoMemory*)list);
 
 	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
-void TestPWSLinkedListAddLast(CuTest* tc)
+void TestMotokoLinkedListAddLast(CuTest* tc)
 {
 	uint32_t initialAllocCount = totalAllocCount();
 
-	PWSLinkedList* list = linkedList();
+	MotokoLinkedList* list = linkedList();
 
 	for (int i = 1; i < 5; i++) {	
 
@@ -80,17 +80,17 @@ void TestPWSLinkedListAddLast(CuTest* tc)
 		CuAssertTrue(tc, count(list) == i);
 	}
 
-	release((PWSMemory*)list);
+	release((MotokoMemory*)list);
 
 	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
-void TestPWSlinkedListAddAtIndex(CuTest* tc)
+void TestMotokolinkedListAddAtIndex(CuTest* tc)
 {
 	uint32_t initialAllocCount = totalAllocCount();
 
-	PWSLinkedList* list = linkedList();
-	PWSMemory* data;
+	MotokoLinkedList* list = linkedList();
+	MotokoMemory* data;
 
 	for (int i = 1; i < 5; i++) {	
 
@@ -117,17 +117,17 @@ void TestPWSlinkedListAddAtIndex(CuTest* tc)
 
 	CuAssertTrue(tc, 3 == *data);
 
-	release((PWSMemory*)list);
+	release((MotokoMemory*)list);
 
 	CuAssertTrue(tc, initialAllocCount == totalAllocCount());	
 }
 
-void TestPWSLinkedListGetFirst(CuTest* tc)
+void TestMotokoLinkedListGetFirst(CuTest* tc)
 {
 	uint32_t initialAllocCount = totalAllocCount();
 
-	PWSLinkedList* list = linkedList();
-	PWSMemory* data;
+	MotokoLinkedList* list = linkedList();
+	MotokoMemory* data;
 
 	for (int i = 1; i < 5; i++) {	
 
@@ -142,17 +142,17 @@ void TestPWSLinkedListGetFirst(CuTest* tc)
 
 	CuAssertTrue(tc, 1 == *data);
 
-	release((PWSMemory*)list);
+	release((MotokoMemory*)list);
 
 	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
-void TestPWSLinkedListGetLast(CuTest* tc)
+void TestMotokoLinkedListGetLast(CuTest* tc)
 {
 	uint32_t initialAllocCount = totalAllocCount();
 
-	PWSLinkedList* list = linkedList();
-	PWSMemory* data;
+	MotokoLinkedList* list = linkedList();
+	MotokoMemory* data;
 
 	for (int i = 1; i < 5; i++) {	
 
@@ -167,17 +167,17 @@ void TestPWSLinkedListGetLast(CuTest* tc)
 
 	CuAssertTrue(tc, 1 == *data);
 
-	release((PWSMemory*)list);
+	release((MotokoMemory*)list);
 
 	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
-void TestPWSLinkedListGetEqual(CuTest* tc)
+void TestMotokoLinkedListGetEqual(CuTest* tc)
 {
 	uint32_t initialAllocCount = totalAllocCount();
 
-	PWSLinkedList* list = linkedList();
-	PWSMemory* data;
+	MotokoLinkedList* list = linkedList();
+	MotokoMemory* data;
 
 	for (int i = 1; i < 5; i++) {	
 
@@ -192,17 +192,17 @@ void TestPWSLinkedListGetEqual(CuTest* tc)
 
 	CuAssertTrue(tc, 4 == *data);
 
-	release((PWSMemory*)list);
+	release((MotokoMemory*)list);
 
 	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
-void TestPWSLinkedListGetByIndex(CuTest* tc)
+void TestMotokoLinkedListGetByIndex(CuTest* tc)
 {
 	uint32_t initialAllocCount = totalAllocCount();
 
-	PWSLinkedList* list = linkedList();
-	PWSMemory* data;
+	MotokoLinkedList* list = linkedList();
+	MotokoMemory* data;
 
 	for (int i = 1; i < 5; i++) {	
 
@@ -217,17 +217,17 @@ void TestPWSLinkedListGetByIndex(CuTest* tc)
 
 	CuAssertTrue(tc, 3 == *data);
 
-	release((PWSMemory*)list);
+	release((MotokoMemory*)list);
 
 	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
-void TestPWSLinkedListRemoveFirst(CuTest* tc)
+void TestMotokoLinkedListRemoveFirst(CuTest* tc)
 {
 	uint32_t initialAllocCount = totalAllocCount();
 
-	PWSLinkedList* list = linkedList();
-	PWSMemory* data;
+	MotokoLinkedList* list = linkedList();
+	MotokoMemory* data;
 
 	for (int i = 0; i < 5; i++) {	
 
@@ -249,16 +249,16 @@ void TestPWSLinkedListRemoveFirst(CuTest* tc)
 		CuAssertTrue(tc, *data == i);
 	}
 
-	release((PWSMemory*)list);
+	release((MotokoMemory*)list);
 	emptyAutoReleasePool();
 
 	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
 
-void TestPWSLinkedListMap(CuTest* tc)
+void TestMotokoLinkedListMap(CuTest* tc)
 {
-	PWSLinkedList* list = linkedList();
-	PWSMemory* data;
+	MotokoLinkedList* list = linkedList();
+	MotokoMemory* data;
 
 	for (int i = 0; i < 5; i++) {	
 
@@ -279,13 +279,13 @@ void TestPWSLinkedListMap(CuTest* tc)
 	
 	CuAssertTrue(tc, 8 == *data);
 
-	release((PWSMemory*)list);
+	release((MotokoMemory*)list);
 }
 
-void TestPWSLinkedListReduce(CuTest* tc)
+void TestMotokoLinkedListReduce(CuTest* tc)
 {
-	PWSLinkedList* list = linkedList();
-	PWSMemory* data;
+	MotokoLinkedList* list = linkedList();
+	MotokoMemory* data;
 
 	for (int i = 0; i < 5; i++) {	
 
@@ -296,7 +296,7 @@ void TestPWSLinkedListReduce(CuTest* tc)
 		addLast(list, data);
 	}
 
-	PWSMemory* acc = alloc(sizeof(int), &dummyDealloc);
+	MotokoMemory* acc = alloc(sizeof(int), &dummyDealloc);
 	*acc = 0;
 	
 	reduce(list, &addIntFunction, acc);
@@ -304,16 +304,16 @@ void TestPWSLinkedListReduce(CuTest* tc)
 	/* 0 + 0 + 1 + 2 + 3 + 4 = 10 */
 	CuAssertTrue(tc, 10 == *acc);
 
-	release((PWSMemory*)list);
+	release((MotokoMemory*)list);
 	release(acc);
 }
 
-void PWSLinkedListGetRest(CuTest* tc)
+void MotokoLinkedListGetRest(CuTest* tc)
 {
 	uint32_t initialAllocCount = totalAllocCount();
 
-	PWSLinkedList* list = linkedList();
-	PWSMemory* data;
+	MotokoLinkedList* list = linkedList();
+	MotokoMemory* data;
 
 	for (int i = 0; i < 5; i++) {	
 
@@ -324,16 +324,16 @@ void PWSLinkedListGetRest(CuTest* tc)
 		addLast(list, data);
 	}
 
-	PWSLinkedList* rest = getRest(list);
+	MotokoLinkedList* rest = getRest(list);
 
-	PWSMemory* first = getFirst(rest);
-	PWSMemory* last = getLast(rest);
+	MotokoMemory* first = getFirst(rest);
+	MotokoMemory* last = getLast(rest);
 
 	CuAssertTrue(tc, 1 == *first);
 	CuAssertTrue(tc, 4 == *last);
 
-	release((PWSMemory*)rest);
-	release((PWSMemory*)list); 
+	release((MotokoMemory*)rest);
+	release((MotokoMemory*)list); 
 
 	CuAssertTrue(tc, initialAllocCount == totalAllocCount());
 }
