@@ -32,3 +32,4 @@ Content
 
 MotokoHeap - A small memory handling utility with reference counting, autorelease and buffer overrun checks.
 MotokoLinkedList - A linked list implementation.
+MotokoBuffer - A circular buffer.
