@@ -3,10 +3,11 @@
  * Author: Daniel Hjort
  */
 
-#ifndef __MotokoHASHFUNCTIONS_H__
-#define __MotokoHASHFUNCTIONS_H__
+#ifndef __HASHFUNCTIONS_H__
+#define __HASHFUNCTIONS_H__
 
 unsigned long djb2_hash(unsigned char *str);
+
 unsigned long sdbm_hash(unsigned char *str);
 
 #endif

@@ -1,7 +1,7 @@
-MotokoLib
-=========
+UtilLib
+=======
 
-A library of algorithms and data structures implemented in C.
+A library containing useful tools and utilities.
 
 To build:
 
@@ -27,9 +27,16 @@ To clean:
 
     make clean
 
-Content
+Features
+--------
+
+* Heap - A small memory handling utility with reference counting, autorelease and buffer overrun checks.
+* LinkedList - A linked list implementation.
+
+Backlog
 -------
 
-MotokoHeap - A small memory handling utility with reference counting, autorelease and buffer overrun checks.
-MotokoLinkedList - A linked list implementation.
-MotokoBuffer - A circular buffer.
+* MsgQueue - A message queue using sockets.
+* MergeSort
+* Dictionary
+* Tree

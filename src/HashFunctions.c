@@ -3,7 +3,7 @@
  * Author: Daniel Hjort
  */
 
-unsigned long djb2_hash(unsigned char *str)
+unsigned long util_djb2_hash(unsigned char *str)
 {
 	unsigned long hash = 5381;
 	int c;
@@ -15,7 +15,7 @@ unsigned long djb2_hash(unsigned char *str)
 	return hash;
 }
 
-unsigned long sdbm_hash(unsigned char *str)
+unsigned long util_sdbm_hash(unsigned char *str)
 {
 	unsigned long hash = 0;
 	int c;

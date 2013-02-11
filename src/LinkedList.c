@@ -7,61 +7,61 @@
 #include <string.h>
 #include <assert.h>
 
-#include "MotokoLinkedList.h"
-#include "MotokoHeap.h"
+#include "LinkedList.h"
+#include "Heap.h"
 
 typedef struct __ListNode ListNode;
 struct __ListNode {
-	MotokoMemory *data;
+	Memory *data;
 	ListNode *previous;
 	ListNode *next;
 };
 
-struct __MotokoLinkedList {
+struct __LinkedList {
 	ListNode *head;
         ListNode *tail;
         int count;
 	bool reversed;
 };
 
-static void deallocNode(MotokoMemory* memory)
+static void deallocNode(Memory* memory)
 {
 	ListNode* node = (ListNode*)memory;
 
-	release(node->data), node->data = NULL;
+	util_release(node->data), node->data = NULL;
 	/* Other list nodes are intentionally not released. */
 }
 
-static void deallocList(MotokoMemory* memory)
+static void deallocList(Memory* memory)
 {
-	MotokoLinkedList* list = (MotokoLinkedList*)memory;
+	LinkedList* list = (LinkedList*)memory;
 
 	ListNode* node = list->head;
 	while(node != NULL) {
 		ListNode* tmp_node = node;
 		node = node->next;
-		release((MotokoMemory*)tmp_node);
+		util_release((Memory*)tmp_node);
 	}
 }
 
-static ListNode* nodeWithData(MotokoMemory *data)
+static ListNode* nodeWithData(Memory *data)
 {
-	ListNode* node = (ListNode*)alloc(sizeof(ListNode), &deallocNode);
+	ListNode* node = (ListNode*)util_alloc(sizeof(ListNode), &deallocNode);
 	node->data = data;
 	return node;
 }
 
-MotokoLinkedList* linkedList()
+LinkedList* util_linkedList()
 {
-	return (MotokoLinkedList*)alloc(sizeof(MotokoLinkedList), &deallocList);
+	return (LinkedList*)util_alloc(sizeof(LinkedList), &deallocList);
 }
 
-/*MotokoLinkedList* initLinkedListFromArray(MotokoLinkedList* list, MotokoArray* array, int size)
+/*LinkedList* initLinkedListFromArray(LinkedList* list, Array* array, int size)
 {
 
 }*/
 
-int addLast(MotokoLinkedList *list, MotokoMemory* data)
+int util_list_add_last(LinkedList *list, Memory* data)
 {
 	ListNode* node = nodeWithData(data);
 	node->previous = list->tail;
@@ -74,7 +74,7 @@ int addLast(MotokoLinkedList *list, MotokoMemory* data)
 	return list->count++;
 }
 
-void addFirst(MotokoLinkedList *list, MotokoMemory* data)
+void util_list_add_first(LinkedList *list, Memory* data)
 {
 	ListNode* node = nodeWithData(data);
 	node->next = list->head;
@@ -86,16 +86,16 @@ void addFirst(MotokoLinkedList *list, MotokoMemory* data)
 	list->count++;
 }
 
-int addAtIndex(MotokoLinkedList *list, MotokoMemory* data, int index)
+int util_list_add_at_index(LinkedList *list, Memory* data, int index)
 {
 	ListNode* node = list->head;
 	ListNode* newNode;
 	int acctualIndex = 0;
 
 	if(0 == index) {
-		addFirst(list, data);
+		util_list_add_first(list, data);
 	} else if (list->count <= index) {
-		addLast(list, data);
+		util_list_add_last(list, data);
 		acctualIndex = list->count - 1;
 	} else {
 
@@ -118,9 +118,9 @@ int addAtIndex(MotokoLinkedList *list, MotokoMemory* data, int index)
 	return acctualIndex;
 }
 
-MotokoMemory* getFirst(MotokoLinkedList* list)
+Memory* util_list_first(LinkedList* list)
 {
-	MotokoMemory* data = NULL;
+	Memory* data = NULL;
 	
 	if(list->head != NULL)
 		data = list->head->data;
@@ -128,9 +128,9 @@ MotokoMemory* getFirst(MotokoLinkedList* list)
 	return data;
 }
 
-MotokoLinkedList* getRest(MotokoLinkedList* list)
+LinkedList* util_list_rest(LinkedList* list)
 {
-	MotokoLinkedList* rest = linkedList();
+	LinkedList* rest = util_linkedList();
 
 	if(list->head != NULL) {	
 		rest->head = list->head->next;
@@ -140,16 +140,16 @@ MotokoLinkedList* getRest(MotokoLinkedList* list)
 	ListNode* node = rest->head;
 
 	while(node != NULL) {
-		retain((MotokoMemory*)node);
+		util_retain((Memory*)node);
 		node = node->next;
 	}
 
 	return rest;
 }
 
-MotokoMemory* getLast(MotokoLinkedList* list)
+Memory* util_list_last(LinkedList* list)
 {
-	MotokoMemory* data = NULL;
+	Memory* data = NULL;
 	
 	if(list->head != NULL)
 		data = list->tail->data;
@@ -157,9 +157,10 @@ MotokoMemory* getLast(MotokoLinkedList* list)
 	return data;
 }
 
-MotokoMemory* getEqual(MotokoLinkedList* list, MotokoMemory* data, int (*compareFunction)(void*, void*))
+Memory* util_list_equal(LinkedList* list, Memory* data,
+		int (*compareFunction)(void*, void*))
 {
-	MotokoMemory* result = NULL;
+	Memory* result = NULL;
 
 	ListNode* node = list->head;
 
@@ -174,9 +175,9 @@ MotokoMemory* getEqual(MotokoLinkedList* list, MotokoMemory* data, int (*compare
 	return result;
 }
 
-MotokoMemory* getByIndex(MotokoLinkedList* list, int index)
+Memory* util_list_index(LinkedList* list, int index)
 {
-	MotokoMemory* data = NULL;
+	Memory* data = NULL;
 
 	ListNode* node = list->head;
 
@@ -188,38 +189,49 @@ MotokoMemory* getByIndex(MotokoLinkedList* list, int index)
 	return data;
 }
 
-MotokoMemory* removeFirst(MotokoLinkedList* list)
+Memory* util_list_remove_first(LinkedList* list)
 {
-	MotokoMemory* data = NULL;
+	Memory* data = NULL;
 
 	if(list->head != NULL) {
 		ListNode* nodeToRemove = list->head;
 		data = list->head->data;
 		list->head = list->head->next;
-		autorelease((MotokoMemory*)nodeToRemove);
+		util_autorelease((Memory*)nodeToRemove);
 		list->count--;
 	}
 
 	return data;
 }
 
-/*MotokoMemory* removeLast(MotokoLinkedList* list)
+Memory* util_list_remove_last(LinkedList* list)
+{
+	Memory* data = NULL;
+
+	if(list->tail != NULL) {
+		ListNode* nodeToRemove = list->tail;
+		data = list->tail->data;
+		list->tail = list->tail->previous;
+		util_autorelease((Memory*)nodeToRemove);
+		list->count--;
+	}
+
+	return data;
+}
+
+/*Memory* removeByReference(LinkedList* list, Memory* data)
 {
 }
 
-MotokoMemory* removeByReference(MotokoLinkedList* list, MotokoMemory* data)
+Memory* removeByValue(LinkedList* list, Memory* data)
 {
 }
 
-MotokoMemory* removeByValue(MotokoLinkedList* list, MotokoMemory* data)
-{
-}
-
-MotokoMemory* removeByIndex(MotokoLinkedList* list, int index)
+Memory* removeByIndex(LinkedList* list, int index)
 {
 }*/
 
-void map(MotokoLinkedList* list, void (*mappingFunction)(MotokoMemory*))
+void util_list_map(LinkedList* list, void (*mappingFunction)(Memory*))
 {
 	ListNode* node = list->head;
 
@@ -229,7 +241,7 @@ void map(MotokoLinkedList* list, void (*mappingFunction)(MotokoMemory*))
 	}
 }
 
-void reduce(MotokoLinkedList* list, void (*reducingFunction)(MotokoMemory*, MotokoMemory*), MotokoMemory* acc)
+void util_list_reduce(LinkedList* list, void (*reducingFunction)(Memory*, Memory*), Memory* acc)
 {
 	ListNode* node = list->head;
 
@@ -239,12 +251,12 @@ void reduce(MotokoLinkedList* list, void (*reducingFunction)(MotokoMemory*, Moto
 	}	
 }
 
-int count(MotokoLinkedList *list)
+int util_list_count(LinkedList *list)
 {
 	return list->count;
 }
 
-bool isEmpty(MotokoLinkedList *list)
+bool util_list_is_empty(LinkedList *list)
 {
 	return list->count == 0;
 }

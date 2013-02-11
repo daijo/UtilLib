@@ -19,12 +19,12 @@ endif
 
 # Files
 
-LIB = libMotoko.a
+LIB = libUtil.a
 
-_DEPS = MotokoHeap.h MotokoLinkedList.h MotokoHashFunctions.h
+_DEPS = Heap.h LinkedList.h HashFunctions.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = MotokoHeap.o MotokoLinkedList.o MotokoHashFunctions.o
+_OBJ = Heap.o LinkedList.o HashFunctions.o
 ifdef CROSS_COMPILE
 	ODIR = $(OUTDIR)/$(CROSS_COMPILE)obj
 	OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
@@ -33,7 +33,7 @@ else
 	TESTOBJ = $(patsubst %,$(TESTODIR)/%,$(_OBJ))
 endif
 
-_TESTS = MotokoHeapTest.o MotokoLinkedListTest.o CuTest.o AllTests.o
+_TESTS = HeapTest.o LinkedListTest.o CuTest.o AllTests.o
 TESTS = $(patsubst %,$(TESTODIR)/%,$(_TESTS))
 
 # Make stuff
