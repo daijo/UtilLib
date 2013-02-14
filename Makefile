@@ -21,10 +21,17 @@ endif
 
 LIB = libUtil.a
 
-_DEPS = Heap.h LinkedList.h HashFunctions.h
+_DEPS = MsgQueue.h Heap.h LinkedList.h HashFunctions.h
+ifndef CROSS_COMPILE
+_DEPS += MsgQueue.h
+endif
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 _OBJ = Heap.o LinkedList.o HashFunctions.o
+ifndef CROSS_COMPILE
+_OBJ += MsgQueue.o
+endif
+
 ifdef CROSS_COMPILE
 	ODIR = $(OUTDIR)/$(CROSS_COMPILE)obj
 	OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))

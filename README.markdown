@@ -32,11 +32,12 @@ Features
 
 * Heap - A small memory handling utility with reference counting, autorelease and buffer overrun checks.
 * LinkedList - A linked list implementation.
+* MsgQueue - A message queue using Unix domain sockets.
 
 Backlog
 -------
 
-* MsgQueue - A message queue using sockets.
+* Log
 * MergeSort
 * Dictionary
 * Tree
